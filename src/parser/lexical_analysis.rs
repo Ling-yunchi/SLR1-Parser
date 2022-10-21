@@ -1,3 +1,4 @@
+use core::num;
 use std::error::Error;
 
 use super::error::LexicalError;
@@ -7,41 +8,19 @@ pub fn lexical_analysis(input: String) {
     let mut after_preprocessing = preprocess(input);
 }
 
+#[rustfmt::skip]
 const KEYWORDS: [&str; 32] = [
-    "char",
-    "double",
-    "enum",
-    "float", // 数据类型关键字
-    "int",
-    "long",
-    "short",
-    "signed",
-    "struct",
-    "union",
-    "unsigned",
-    "void",
-    "for",
-    "do",
-    "while",
-    "break",
-    "continue", // 控制语句关键字
-    "if",
-    "else",
-    "goto",
-    "switch",
-    "case",
-    "functionault",
-    "return",
-    "auto",
-    "extern",
-    "register",
-    "static", // 存储类型关键字
-    "const",
-    "sizeof",
-    "typefunction",
-    "volatile", // 其他关键字
+    "char", "double", "enum", "float",  // 数据类型关键字
+    "int", "long", "short", "signed",
+    "struct", "union", "unsigned", "void",
+    "for", "do", "while", "break", "continue",  // 控制语句关键字
+    "if", "else", "goto",
+    "switch", "case", "default", "return",
+    "auto", "extern", "register", "static",  // 存储类型关键字
+    "const", "sizeof", "typeof", "volatile"  // 其他关键字
 ];
 
+#[rustfmt::skip]
 const OPERATOR: [&str; 24] = [
     "+", "-", "*", "/", "%", "++", "--", // 算术运算符
     "==", "!=", ">", "<", ">=", "<=", // 关系运算符
@@ -50,8 +29,98 @@ const OPERATOR: [&str; 24] = [
     "=", "+=", "-=", "+=", "/=", "%=", // 赋值运算符
 ];
 
+#[rustfmt::skip]
+const DELIMITERS: [&str; 9] = ["{", "}", "[", "]", "(", ")", ",", ".", ";"];
+
+pub struct Token {
+    pub token_type: TokenType,
+    pub token_value: String,
+}
+
+pub enum TokenType {
+    Keyword,
+    Identifier,
+    Constant,
+    Operator,
+    Delimiter,
+}
+
 /// 处理
-fn process(input: String) -> Result<Vec<String>, Box<dyn Error>> {
+fn process(input: Vec<String>) -> Result<Vec<String>, Box<dyn Error>> {
+    let mut result = Vec::new();
+    for line in input {
+        let mut chars = line.chars().peekable();
+
+        while let Some(char) = chars.next() {
+            if char == ' ' {
+                continue;
+            }
+
+            if DELIMITERS.contains(&char.to_string().as_str()) {
+                result.push(Token {
+                    token_type: TokenType::Delimiter,
+                    token_value: char.to_string(),
+                });
+                continue;
+            }
+
+            if OPERATOR.contains(&char.to_string().as_str()) {
+                let mut operator = char.to_string();
+
+                if let Some(next_char) = chars.peek() {
+                    let double_operator = format!("{}{}", operator, next_char);
+                    if OPERATOR.contains(&double_operator.as_str()) {
+                        chars.next();
+                        operator = double_operator;
+                    }
+                }
+
+                result.push(Token {
+                    token_type: TokenType::Operator,
+                    token_value: operator,
+                });
+                continue;
+            }
+
+            if char.is_numeric() {
+                let mut number = char.to_string();
+
+                while let Some(next_char) = chars.peek() {
+                    if next_char.is_numeric() || *next_char == '.' {
+                        number.push(*next_char);
+                        chars.next();
+                    } else {
+                        break;
+                    }
+                }
+
+                // 防止出现数字开头的非法标识符
+                if number.len() == line.len()
+                    || chars.peek().unwrap().is_numeric()   // 123abc
+                    || OPERATOR.contains(&chars.peek().unwrap().to_string().as_str())
+                    || DELIMITERS.contains(&chars.peek().unwrap().to_string().as_str())
+                    || chars.peek().unwrap() == &' '
+                {
+                    if number.contains('.') {
+                        let idx = number.find('.').unwrap();
+                        if number[idx + 1..].contains('.') {
+                            return Err(Box::new(LexicalError::new(&format!(
+                                "Invalid float number {}",
+                                number,
+                            ))));
+                        } else {
+                            result.push(Token {
+                                token_type: TokenType::Constant,
+                                token_value: number,
+                            });
+                        }
+                    }
+                }
+                continue;
+            }
+        }
+    }
+
     Ok(vec![])
 }
 
