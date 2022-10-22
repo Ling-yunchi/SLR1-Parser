@@ -1,2 +1,243 @@
-g:
-  s: 程序
+s: 程序
+v:
+  - 程序'
+  - 程序
+  - 函数定义
+  - 形式参数
+  - 代码块
+  - 变量类型
+  - 算术表达式
+  - 布尔表达式
+  - 比较运算符
+  - 算术运算符
+t:
+  - id
+  - value
+  - "("
+  - ")"
+  - "{"
+  - "}"
+  - ","
+  - ";"
+  - "="
+  - while
+  - if
+  - else
+  - return
+  - int
+  - float
+  - double
+  - bool
+  - char
+  - "&&"
+  - "||"
+  - "!"
+  - "true"
+  - "false"
+  - "<"
+  - ">"
+  - "<="
+  - ">="
+  - "=="
+  - "!="
+  - "-"
+  - "+"
+  - "*"
+  - "/"
+p:
+  - left: 程序'
+    right:
+      - 程序
+  - left: 程序
+    right:
+      - 函数定义
+  - left: 函数定义
+    right:
+      - 函数定义
+      - 函数定义
+  - left: 函数定义
+    right:
+      - 变量类型
+      - id
+      - "("
+      - ")"
+      - "{"
+      - 代码块
+      - "}"
+  - left: 函数定义
+    right:
+      - 变量类型
+      - id
+      - "("
+      - 形式参数
+      - ")"
+      - "{"
+      - 代码块
+      - "}"
+  - left: 形式参数
+    right:
+      - 变量类型
+      - id
+  - left: 形式参数
+    right:
+      - 变量类型
+      - id
+      - ","
+      - 形式参数
+  - left: 代码块
+    right:
+      - 代码块
+      - 代码块
+  - left: 代码块
+    right:
+      - 变量类型
+      - id
+      - ";"
+  - left: 代码块
+    right:
+      - 变量类型
+      - id
+      - "="
+      - 算术表达式
+      - ";"
+  - left: 代码块
+    right:
+      - id
+      - "="
+      - 算术表达式
+      - ";"
+  - left: 代码块
+    right:
+      - while
+      - "("
+      - 布尔表达式
+      - ")"
+      - "{"
+      - 代码块
+      - "}"
+  - left: 代码块
+    right:
+      - if
+      - "("
+      - 布尔表达式
+      - ")"
+      - "{"
+      - 代码块
+      - "}"
+  - left: 代码块
+    right:
+      - if
+      - "("
+      - 布尔表达式
+      - ")"
+      - "{"
+      - 代码块
+      - "}"
+      - else
+      - "{"
+      - 代码块
+      - "}"
+  - left: 代码块
+    right:
+      - return
+      - ";"
+  - left: 代码块
+    right:
+      - return
+      - 算术表达式
+      - ";"
+  - left: 变量类型
+    right:
+      - int
+  - left: 变量类型
+    right:
+      - float
+  - left: 变量类型
+    right:
+      - double
+  - left: 变量类型
+    right:
+      - bool
+  - left: 变量类型
+    right:
+      - char
+  - left: 算术表达式
+    right:
+      - 算术表达式
+      - 算术运算符
+      - 算术表达式
+  - left: 算术表达式
+    right:
+      - "-"
+      - 算术表达式
+  - left: 算术表达式
+    right:
+      - "("
+      - 算术表达式
+      - ")"
+  - left: 算术表达式
+    right:
+      - id
+  - left: 算术表达式
+    right:
+      - value
+  - left: 布尔表达式
+    right:
+      - 算术表达式
+      - 比较运算符
+      - 算术表达式
+  - left: 布尔表达式
+    right:
+      - 布尔表达式
+      - "&&"
+      - 布尔表达式
+  - left: 布尔表达式
+    right:
+      - 布尔表达式
+      - "||"
+      - 布尔表达式
+  - left: 布尔表达式
+    right:
+      - "!"
+      - 布尔表达式
+  - left: 布尔表达式
+    right:
+      - "("
+      - 布尔表达式
+      - ")"
+  - left: 布尔表达式
+    right:
+      - "true"
+  - left: 布尔表达式
+    right:
+      - "false"
+  - left: 比较运算符
+    right:
+      - "<"
+  - left: 比较运算符
+    right:
+      - ">"
+  - left: 比较运算符
+    right:
+      - "<="
+  - left: 比较运算符
+    right:
+      - ">="
+  - left: 比较运算符
+    right:
+      - "=="
+  - left: 比较运算符
+    right:
+      - "!="
+  - left: 算术运算符
+    right:
+      - "+"
+  - left: 算术运算符
+    right:
+      - "-"
+  - left: 算术运算符
+    right:
+      - "*"
+  - left: 算术运算符
+    right:
+      - "/"
