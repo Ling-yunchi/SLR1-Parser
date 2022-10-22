@@ -247,7 +247,7 @@ fn process(input: Vec<String>) -> (Vec<Token>, bool) {
                 });
             } else {
                 // 首字母应为字母或下划线
-                let first_char = identifier.chars().nth(0).unwrap();
+                let first_char = identifier.chars().next().unwrap();
                 if first_char == '_' || first_char.is_alphabetic() {
                     result.push(Token {
                         token_type: TokenType::Identifier,
