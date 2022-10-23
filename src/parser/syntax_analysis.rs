@@ -1,4 +1,7 @@
-use super::{error::SyntaxError, lexical_analysis::Token};
+use super::{
+    error::{GrammarError, SyntaxError},
+    lexical_analysis::Token,
+};
 use serde::{Deserialize, Serialize};
 use std::collections::{HashMap, HashSet};
 
@@ -22,8 +25,41 @@ pub struct Grammar {
 }
 
 impl Grammar {
+    /// 从yml中读取语法定义
     fn from_yml(input: &str) -> Result<Grammar, serde_yaml::Error> {
         serde_yaml::from_str::<Grammar>(input)
+    }
+
+    /// 验证语法定义是否合法
+    fn validate(&self) -> Result<(), GrammarError> {
+        // 验证终结符和非终结符没有重复元素
+        let s = self.v.iter().chain(self.t.iter()).collect::<HashSet<_>>();
+        if s.len() != self.v.len() + self.t.len() {
+            return Err(GrammarError::new("终结符和非终结符存在重复元素"));
+        }
+
+        // 验证开始符号是否在非终结符集中
+        if !self.v.contains(&self.s) {
+            return Err(GrammarError::new("开始符号不在非终结符集中"));
+        }
+
+        // 验证产生式左部是否在非终结符集中
+        for product in &self.p {
+            if !self.v.contains(&product.left) {
+                return Err(GrammarError::new("产生式左部不在非终结符集中"));
+            }
+        }
+
+        // 验证产生式右部是否在非终结符集和终结符集中
+        for product in &self.p {
+            for right in &product.right {
+                if !self.v.contains(right) && !self.t.contains(right) {
+                    return Err(GrammarError::new("产生式右部不在非终结符集和终结符集中"));
+                }
+            }
+        }
+
+        Ok(())
     }
 }
 
