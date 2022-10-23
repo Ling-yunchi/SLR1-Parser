@@ -1,11 +1,6 @@
-use std::{
-    collections::{binary_heap::Iter, HashMap, HashSet},
-    os::windows::prelude::FromRawSocket,
-};
-
-use serde::{Deserialize, Serialize};
-
 use super::{error::SyntaxError, lexical_analysis::Token};
+use serde::{Deserialize, Serialize};
+use std::collections::{HashMap, HashSet};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Product {
@@ -39,8 +34,6 @@ pub fn syntax_analysis(tokens: Vec<Token>) -> Result<(), SyntaxError> {
         .map_err(|e| SyntaxError::new(&format!("Failed to read grammar file error: {}", e)))?;
     let grammar = Grammar::from_yml(&grammar_yml)
         .map_err(|e| SyntaxError::new(&format!("Failed to parse grammar file error: {}", e)))?;
-
-    // println!("{:?}", grammar);
 
     Ok(())
 }
@@ -137,8 +130,6 @@ fn union_first(first: &mut HashMap<String, Vec<String>>, x: &str, y: &str, disca
         (_, false) => first.get(y).unwrap().clone(),
     };
 
-    println!("{:#?}", x_first);
-
     x_first = x_first
         .into_iter()
         .chain(y_first.into_iter())
@@ -146,8 +137,6 @@ fn union_first(first: &mut HashMap<String, Vec<String>>, x: &str, y: &str, disca
         .into_iter()
         .collect();
     let after = x_first.len();
-
-    println!("{:#?}", x_first);
 
     first.insert(x.to_string(), x_first);
 
@@ -160,12 +149,8 @@ fn get_follow() -> Result<(), SyntaxError> {
 
 #[cfg(test)]
 mod tests {
-
-    use std::collections::HashMap;
-
-    use crate::parser::syntax_analysis::get_first;
-
     use super::Grammar;
+    use crate::parser::syntax_analysis::get_first;
 
     #[test]
     fn test_serde_yml_read() {
