@@ -173,4 +173,92 @@ mod tests {
         let g: Grammar = serde_yaml::from_str(&yml).unwrap();
         println!("{:?}", g);
     }
+
+    macro_rules! hashmap {
+        ($( $key: expr => $val: expr ),*) => {{
+             let mut map = ::std::collections::HashMap::new();
+             $( map.insert($key, $val); )*
+             map
+        }}
+    }
+
+    macro_rules! s {
+        ($s:expr) => {
+            String::from($s)
+        };
+    }
+
+    #[test]
+    fn test_first() {
+        let grammar_yml = r#"
+        s: E
+        v:
+          - E
+          - E'
+          - T
+          - T'
+          - F
+        t:
+          - ε
+          - +
+          - "*"
+          - (
+          - )
+          - id
+        p:
+          - left: E
+            right:
+              - T
+              - E'
+          - left: E'
+            right:
+              - +
+              - T
+              - E'
+          - left: E'
+            right:
+              - ε
+          - left: T
+            right:
+              - F
+              - T'
+          - left: T'
+            right:
+              - "*"
+              - F
+              - T'
+          - left: T'
+            right:
+              - ε
+          - left: F
+            right:
+              - (
+              - E
+              - )
+          - left: F
+            right:
+              - id
+        "#;
+        let g = Grammar::from_yml(grammar_yml).unwrap();
+        println!("{:#?}", g);
+        let first = get_first(&g);
+        println!("{:#?}", first);
+
+        assert_eq!(
+            first,
+            hashmap!(
+                s!("E") => vec![s!("id"),s!("(")],
+                s!("E'") => vec![s!("+"),s!("ε")],
+                s!("F") => vec![s!("("),s!("id")],
+                s!("T") => vec![s!("id"),s!("(")],
+                s!("T'") => vec![s!("*"),s!("ε")],
+                s!("*") => vec![s!("*")],
+                s!("+") => vec![s!("+")],
+                s!("ε") => vec![s!("ε")],
+                s!("(") => vec![s!("(")],
+                s!(")") => vec![s!(")")],
+                s!("id") => vec![s!("id")]
+            )
+        );
+    }
 }
