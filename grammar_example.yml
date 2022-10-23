@@ -1,0 +1,83 @@
+# This yml represents the following grammar
+# G = (S, V, T, P)
+# S = s
+# V = {A}
+# T = {a}
+# P = {
+#   s -> A
+#   A -> a
+# }
+---
+s: s
+v:
+  - A
+t:
+  - a
+p:
+  - left: s
+    right:
+      - A
+  - left: A
+    right:
+      - a
+
+# This yml represents the following grammar
+# G = (S, V, T, P)
+# S = E
+# V = {E,E',T,T',F}
+# T = {ε,+,*,(,),id}
+# P = {
+#   E -> T E'
+#   E' -> + T E' | ε
+#   T -> F T'
+#   T' -> * F T' | ε
+#   F -> ( E ) | id
+# }
+---
+s: E
+v:
+  - E
+  - E'
+  - T
+  - T'
+  - F
+t:
+  - ε
+  - +
+  - "*"
+  - (
+  - )
+  - id
+p:
+  - left: E
+    right:
+      - T
+      - E'
+  - left: E'
+    right:
+      - +
+      - T
+      - E'
+  - left: E'
+    right:
+      - ε
+  - left: T
+    right:
+      - F
+      - T'
+  - left: T'
+    right:
+      - "*"
+      - F
+      - T'
+  - left: T'
+    right:
+      - ε
+  - left: F
+    right:
+      - (
+      - E
+      - )
+  - left: F
+    right:
+      - id
