@@ -1,21 +1,21 @@
 use super::{
     error::{GrammarError, SyntaxError},
-    lexical_analysis::Token,
+    lexical_analysis::{Token, TokenType},
 };
 use serde::{Deserialize, Serialize};
 use std::{
-    collections::{HashMap, HashSet},
+    collections::{HashMap, HashSet, VecDeque},
     vec,
 };
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Product {
     pub left: String,       // 产生式左部，为一个非终结符
     pub right: Vec<String>, // 产生式右部，含多个终结符或非终结符
 }
 
 /// 语法定义
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Grammar {
     /// 开始符号
     pub s: String,
@@ -80,8 +80,231 @@ pub fn syntax_analysis(tokens: Vec<Token>) -> Result<(), SyntaxError> {
     Ok(())
 }
 
-fn get_SLR1_table() -> Result<(), SyntaxError> {
-    Ok(())
+/// # 对输入文法G获取SLR(1)分析表
+/// ## 输入
+/// - 输入文法为非拓广文法
+fn get_SLR1_table(g: &Grammar) -> (Vec<HashMap<String, String>>, Vec<HashMap<String, String>>) {
+    let mut g = g.clone();
+    // 获取非拓广文法G的FOLLOW集，进行规约时使用
+    let follow = get_follow(&g);
+
+    // 将非拓广文法G转换为拓广文法G'
+    // 即修改开始符号为S'，添加产生式S' -> S，并将S'加入非终结符集
+    let raw_s = g.s.clone();
+    g.s = raw_s.clone() + "'";
+    g.v.push(g.s.clone());
+    g.p.push(Product {
+        left: g.s.clone(),
+        right: vec![raw_s],
+    });
+    // 拓广文法的目的是保证文法的开始符号的定义只有一个产生式
+    // 并且文法的开始符号不会出现在其他产生式的右部
+    // 也保证了G'只有唯一的接受状态
+
+    // 求解G'的LR(0)项目集族
+    let lr0_items = get_lr0_collection(&g);
+
+    // Action表初始化
+    let mut ACTION = Vec::new();
+    let mut row = HashMap::new();
+    g.t.iter().for_each(|t| {
+        row.insert(t.clone(), "".to_string());
+    });
+    row.insert("#".to_string(), "".to_string());
+    lr0_items.iter().for_each(|_| {
+        ACTION.push(row.clone());
+    });
+
+    // Goto表初始化
+    let mut GOTO = Vec::new();
+    let mut temp_v = g.v.clone().into_iter().collect::<HashSet<_>>();
+    temp_v.remove((g.s.clone() + "'").as_str());
+    let mut row = HashMap::new();
+    temp_v.iter().for_each(|v| {
+        row.insert(v.clone(), "".to_string());
+    });
+    lr0_items.iter().for_each(|_| {
+        GOTO.push(row.clone());
+    });
+
+    // 遍历LR(0)项目集族，填充Action表和Goto表
+    // 1. 若项目A->α.aβ属于I_k，且GO(I_k,a)=I_j，a为终结符，则置ACTION[k,a]为sj
+    // 2. 若项目A->α.属于I_k，那么对任何终结符a∈FOLLOW(A),置ACTION[k,a]为rj，假定A->α为G'的第j个产生式
+    // 3. 若项目S'->S.属于I_k，则置ACTION[k,#]为“acc”
+    // 4. 若GO(I_k,A)=I_j，A为非终结符，则置GOTO[k,A]=j
+    // 5. 若不为以上情况，则ACTION与GOTO表剩余单元格置为空，代表出现错误
+    for (i, items) in lr0_items.iter().enumerate() {
+        for item in items.iter() {
+            // 圆点不在LR(0)项目的最后，则需要移进
+            if item.dot < item.right.len() {
+                // 获取圆点项目的下一个字符
+                let ch = &item.right[item.dot];
+                // 找出项目集items在读入下一个字符ch后，转移到的项目集
+                // 即找到使得goto(I, ch) = lr0_items[j]成立的j
+                for (j, items1) in lr0_items.iter().enumerate() {
+                    if items_eq(&goto(items, ch, &g), items1) {
+                        // 如果ch为终结符，则将ACTION[i, ch]置为sj
+                        if g.t.contains(ch) {
+                            ACTION[i].insert(ch.clone(), format!("s{}", j));
+                        }
+                        // 如果ch为非终结符，则将GOTO[i, ch]置为j
+                        else {
+                            GOTO[i].insert(ch.clone(), format!("{}", j));
+                        }
+                        break;
+                    }
+                }
+            }
+            // 圆点在LR(0)项目的最后，则需要规约
+            else {
+                // 如果是S'->S.，则将ACTION[k, #]置为acc
+                if item.left == format!("{}'", g.s) {
+                    ACTION[i].insert("#".to_string(), "acc".to_string());
+                }
+                // 否则，对于任何终结符a∈FOLLOW(A)，将ACTION[k, a]置为rj
+                else {
+                    let j =
+                        g.p.iter()
+                            .position(|p| p.left == item.left && p.right == item.right)
+                            .unwrap();
+                    let follow_left = follow.get(&item.left).unwrap();
+                    for f in follow_left {
+                        if g.t.contains(f) {
+                            ACTION[i].insert(f.clone(), format!("r{}", j));
+                        }
+                    }
+                    if follow_left.contains(&"#".to_string()) {
+                        ACTION[i].insert("#".to_string(), format!("r{}", j));
+                    }
+                }
+            }
+        }
+    }
+
+    (ACTION, GOTO)
+}
+
+/// # SLR1 分析
+/// ## 输入
+/// - `g`: 文法
+/// - `ACTION`: Action表
+/// - `GOTO`: Goto表
+/// - `token`: 词法分析得到的token序列
+/// ## 输出
+/// - `true`: 分析成功
+/// - `false`: 分析失败
+fn slr1_analysis(
+    g: &Grammar,
+    ACTION: &Vec<HashMap<String, String>>,
+    GOTO: &Vec<HashMap<String, String>>,
+    tokens: Vec<Token>,
+) -> bool {
+    // 初始化状态栈和符号栈
+    let mut state_stack = vec![0];
+    let mut symbol_stack = vec!["#".to_string()];
+
+    // 输入缓冲区
+    let mut buffer = tokens
+        .into_iter()
+        .map(|token| match token.token_type {
+            TokenType::Identifier => "id".to_string(),
+            TokenType::Constant => "value".to_string(),
+            _ => token.token_value,
+        })
+        .collect::<VecDeque<String>>();
+    buffer.push_back("#".to_string());
+
+    loop {
+        // 获取状态栈栈顶元素
+        let state = state_stack.last().unwrap();
+        // 获取输入缓冲区第一个元素
+        let token = match buffer.front() {
+            Some(token) => token,
+            None => {
+                println!("输入缓冲区为空");
+                return false;
+            }
+        };
+        // 获取ACTION表中的状态
+        let action = ACTION[*state].get(token);
+        match action {
+            // 移进
+            Some(action) if action.starts_with("s") => {
+                // 将状态压入状态栈
+                state_stack.push(action[1..].parse::<usize>().unwrap());
+                // 将token压入符号栈
+                symbol_stack.push(token.clone());
+                // 将token从输入缓冲区弹出
+                buffer.pop_front();
+            }
+            // 规约
+            Some(action) if action.starts_with("r") => {
+                // 获取产生式
+                let production = &g.p[action[1..].parse::<usize>().unwrap()];
+                // 将产生式右部的符号从符号栈弹出
+                for _ in 0..production.right.len() {
+                    symbol_stack.pop();
+                }
+                // 将产生式左部的符号压入符号栈
+                symbol_stack.push(production.left.clone());
+                // 获取符号栈栈顶元素
+                let top = symbol_stack.last().unwrap();
+                // 获取GOTO表中的状态
+                let goto = GOTO[*state].get(top);
+                match goto {
+                    Some(goto) if !goto.is_empty() => {
+                        // 将状态压入状态栈
+                        state_stack.push(goto.parse::<usize>().unwrap());
+                    }
+                    _ => {
+                        println!("GOTO表中没有状态");
+                        return false;
+                    }
+                }
+            }
+            // 接受
+            Some(action) if action == "acc" => {
+                println!("分析成功");
+                return true;
+            }
+            _ => {
+                println!("ACTION表中没有状态");
+                return false;
+            }
+        }
+        // // 如果是移进
+        // if action.starts_with("s") {
+        //     // 将状态压入状态栈
+        //     state_stack.push(action[1..].parse::<usize>().unwrap());
+        //     // 将输入缓冲区第一个元素压入符号栈
+        //     symbol_stack.push(buffer.pop_front().unwrap());
+        // }
+        // // 如果是规约
+        // else if action.starts_with("r") {
+        //     // 获取产生式
+        //     let k = action[1..].parse::<usize>().unwrap();
+        //     let p = &g.p[k];
+        //     // 弹出状态栈中与产生式右部长度相同的元素
+        //     for _ in 0..p.right.len() {
+        //         state_stack.pop();
+        //     }
+        //     // 将产生式左部压入符号栈
+        //     symbol_stack.push(p.left.clone());
+        //     // 获取GOTO表中的状态
+        //     let s = state_stack.last().unwrap();
+        //     let state = GOTO[*s].get(&p.left).unwrap();
+        //     // 将状态压入状态栈
+        //     state_stack.push(state.parse::<usize>().unwrap());
+        // }
+        // // 如果是接受
+        // else if action == "acc" {
+        //     return true;
+        // }
+        // // 如果是错误
+        // else {
+        //     return false;
+        // }
+    }
 }
 
 fn get_first(g: &Grammar) -> HashMap<String, Vec<String>> {
@@ -152,10 +375,10 @@ fn get_first(g: &Grammar) -> HashMap<String, Vec<String>> {
     first
 }
 
-/// 将 y first 集合中的终结符添加到 x first 集合中
+/// # 将 y first 集合中的终结符添加到 x first 集合中
 ///
-/// @param discard 是否丢弃 y first 集合中的 ε
-/// @return 是否发生了变化
+/// - @param discard 是否丢弃 y first 集合中的 ε
+/// - @return 是否发生了变化
 fn union_first(first: &mut HashMap<String, Vec<String>>, x: &str, y: &str, discard: bool) -> bool {
     let mut x_first = first.get(x).unwrap().clone();
     let before = x_first.len();
@@ -330,10 +553,146 @@ fn get_first_all<'a>(
     first.get(&a_key).unwrap()
 }
 
+/// LR(0)项目
+///
+/// 一个LR(0)项目是带圆点的产生式
+/// 项目的形式为 A -> α·Bβ
+#[derive(Debug, Clone, PartialEq)]
+struct Item {
+    /// 产生式左部
+    left: String,
+    /// 产生式右部
+    right: Vec<String>,
+    /// ·的位置，在对应坐标字符的左边
+    dot: usize,
+}
+
+fn get_lr0_collection(g: &Grammar) -> Vec<Vec<Item>> {
+    // 项目集族
+    let mut I = vec![];
+
+    // 先将 S' -> ·S 加入到项目集族中
+    let first_prodution = g.p.iter().find(|p| p.left == g.s).unwrap();
+    I.push(Item {
+        left: first_prodution.left.clone(),
+        right: first_prodution.right.clone(),
+        dot: 0,
+    });
+
+    // 项目集规范族
+    let mut C = vec![];
+    C.push(closure(&I, g));
+
+    // 终结符集和非终结符集
+    let v_t =
+        g.v.iter()
+            .chain(g.t.iter())
+            .cloned()
+            .collect::<Vec<String>>();
+
+    // 用于记录还未处理的项目集，相当于队列
+    let mut E = C.clone().into_iter().collect::<VecDeque<Vec<Item>>>();
+
+    while E.len() > 0 {
+        let IT = E.pop_front().unwrap();
+        v_t.iter().for_each(|a| {
+            let J = goto(&IT, a, g);
+            if J.len() > 0 {
+                if !C.contains(&J) {
+                    C.push(J.clone());
+                    E.push_back(J);
+                }
+            }
+        });
+    }
+
+    C
+}
+
+/// 项目集的状态转移函数
+///
+/// @param I 项目集
+/// @param x 终结符或非终结符
+/// @return 项目集 I 关于 x 的后续项目集
+fn goto(it: &Vec<Item>, x: &str, g: &Grammar) -> Vec<Item> {
+    let mut J = vec![];
+
+    it.iter().for_each(|i| {
+        if i.dot >= i.right.len() {
+            return;
+        }
+        let a = &i.right[i.dot];
+        if a == x && (g.v.contains(a) || g.t.contains(a)) {
+            let mut j = i.clone();
+            j.dot += 1;
+            J.push(j);
+        }
+    });
+
+    closure(&J, g)
+}
+
+/// 在拓广文法G'中求解项目I的闭包J
+fn closure(i: &[Item], g: &Grammar) -> Vec<Item> {
+    // 用于存储闭包
+    let mut j = i.to_vec();
+    // 模拟队列，用于存储还未处理的项目
+    let mut e = i.to_vec().into_iter().collect::<VecDeque<Item>>();
+
+    while e.len() > 0 {
+        let item = e.pop_front().unwrap();
+        // 如果项目的·后面是非终结符，则求出其first集
+        if item.dot < item.right.len() {
+            // 获取圆点后面的第一个单词
+            let a = &item.right[item.dot];
+
+            // 如果是终结符，则跳过
+            if !g.v.contains(a) {
+                continue;
+            }
+
+            // 遍历所有产生式，找到左部为a的产生式
+            g.p.iter().filter(|p| p.left == *a).for_each(|p| {
+                // 将产生式加入到闭包中
+                let new_item = Item {
+                    left: p.left.clone(),
+                    right: p.right.clone(),
+                    dot: 0,
+                };
+                if !j.contains(&new_item) {
+                    j.push(new_item.clone());
+                    e.push_back(new_item);
+                }
+            });
+        }
+    }
+
+    j
+}
+
+fn items_eq(items1: &Vec<Item>, items2: &Vec<Item>) -> bool {
+    if items1.len() != items2.len() {
+        return false;
+    }
+
+    for i in items1 {
+        if !items2.contains(i) {
+            return false;
+        }
+    }
+
+    true
+}
+
 #[cfg(test)]
 mod tests {
+    use std::{fs::File, io::Write};
+
     use super::Grammar;
-    use crate::parser::syntax_analysis::{get_first, get_follow};
+    use crate::parser::{
+        lexical_analysis::lexical_analysis,
+        syntax_analysis::{get_SLR1_table, get_first, get_follow, slr1_analysis},
+    };
 
     #[test]
     fn test_serde_yml_read() {
@@ -454,5 +813,66 @@ mod tests {
                 s!("T'") => vec![s!("#"),s!(")"),s!("+")]
             )
         );
+    }
+
+    const program: &str = r#"
+    // This is a note.
+    int main(int a, int b){
+        int res;
+        res = a + b;
+        int d = a;
+        /*
+        if (a < 0){
+            res = -a;
+        }
+        else{
+            while (b > 0){
+                b = b-1;
+            }
+            res = 0;
+        }
+        */
+    }
+    "#;
+
+    #[test]
+    fn test_slr1_analysis() {
+        let mut log = File::create("log.txt").unwrap();
+
+        let (tokens, success) = lexical_analysis(program.to_string()).unwrap();
+
+        let yml = std::fs::read_to_string("grammar.yml").unwrap();
+        let g = Grammar::from_yml(&yml).unwrap();
+        match g.validate() {
+            Ok(_) => {}
+            Err(_) => panic!("grammar is not valid"),
+        }
+        log.write_all(format!("grammar: {:#?}", g).as_bytes())
+            .unwrap();
+
+        let mut first = get_first(&g);
+        log.write_all(format!("first: {:#?}", first).as_bytes())
+            .unwrap();
+        first.iter_mut().for_each(|(k, v)| {
+            v.sort();
+        });
+
+        let mut follow = get_follow(&g);
+        log.write_all(format!("follow: {:#?}", follow).as_bytes())
+            .unwrap();
+        follow.iter_mut().for_each(|(k, v)| {
+            v.sort();
+        });
+
+        let (action, goto) = get_SLR1_table(&g);
+        log.write_all(format!("action: {:#?}", action).as_bytes())
+            .unwrap();
+        log.write_all(format!("goto: {:#?}", goto).as_bytes())
+            .unwrap();
+        println!("action: {:#?}", action);
+        println!("goto: {:#?}", goto);
+
+        let mut slr1 = slr1_analysis(&g, &action, &goto, tokens);
+        println!("{:#?}", slr1);
     }
 }
