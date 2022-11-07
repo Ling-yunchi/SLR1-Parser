@@ -2,9 +2,11 @@ use super::{
     error::{GrammarError, SyntaxError},
     lexical_analysis::{Token, TokenType},
 };
+use log::{debug, error, info, warn};
 use serde::{Deserialize, Serialize};
 use std::{
     collections::{HashMap, HashSet, VecDeque},
+    fmt::Display,
     vec,
 };
 
@@ -12,6 +14,16 @@ use std::{
 pub struct Product {
     pub left: String,       // 产生式左部，为一个非终结符
     pub right: Vec<String>, // 产生式右部，含多个终结符或非终结符
+}
+
+impl Display for Product {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{} -> ", self.left)?;
+        for i in 0..self.right.len() {
+            write!(f, "{} ", self.right[i])?;
+        }
+        Ok(())
+    }
 }
 
 /// 语法定义
@@ -158,7 +170,8 @@ fn get_SLR1_table(g: &Grammar) -> (Vec<HashMap<String, String>>, Vec<HashMap<Str
             // 圆点在LR(0)项目的最后，则需要规约
             else {
                 // 如果是S'->S.，则将ACTION[k, #]置为acc
-                if item.left == format!("{}'", g.s) {
+                if item.left == g.s {
+                    debug!("here!");
                     ACTION[i].insert("#".to_string(), "acc".to_string());
                 }
                 // 否则，对于任何终结符a∈FOLLOW(A)，将ACTION[k, a]置为rj
@@ -213,97 +226,74 @@ fn slr1_analysis(
         })
         .collect::<VecDeque<String>>();
     buffer.push_back("#".to_string());
+    debug!("init buffer: {:?}", buffer);
 
+    let mut step = 1;
     loop {
+        debug!(
+            "step {}: \nstate_stack: {:?}\nsymbol_stack: {:?}\nbuffer: {:?}",
+            step, state_stack, symbol_stack, buffer
+        );
+        step += 1;
         // 获取状态栈栈顶元素
         let state = state_stack.last().unwrap();
         // 获取输入缓冲区第一个元素
         let token = match buffer.front() {
             Some(token) => token,
             None => {
-                println!("输入缓冲区为空");
+                error!("输入缓冲区为空");
                 return false;
             }
         };
         // 获取ACTION表中的状态
-        let action = ACTION[*state].get(token);
-        match action {
-            // 移进
-            Some(action) if action.starts_with("s") => {
-                // 将状态压入状态栈
-                state_stack.push(action[1..].parse::<usize>().unwrap());
-                // 将token压入符号栈
-                symbol_stack.push(token.clone());
-                // 将token从输入缓冲区弹出
-                buffer.pop_front();
-            }
-            // 规约
-            Some(action) if action.starts_with("r") => {
-                // 获取产生式
-                let production = &g.p[action[1..].parse::<usize>().unwrap()];
-                // 将产生式右部的符号从符号栈弹出
-                for _ in 0..production.right.len() {
-                    symbol_stack.pop();
-                }
-                // 将产生式左部的符号压入符号栈
-                symbol_stack.push(production.left.clone());
-                // 获取符号栈栈顶元素
-                let top = symbol_stack.last().unwrap();
-                // 获取GOTO表中的状态
-                let goto = GOTO[*state].get(top);
-                match goto {
-                    Some(goto) if !goto.is_empty() => {
-                        // 将状态压入状态栈
-                        state_stack.push(goto.parse::<usize>().unwrap());
-                    }
-                    _ => {
-                        println!("GOTO表中没有状态");
-                        return false;
-                    }
-                }
-            }
-            // 接受
-            Some(action) if action == "acc" => {
-                println!("分析成功");
-                return true;
-            }
-            _ => {
-                println!("ACTION表中没有状态");
+        let action = match ACTION[*state].get(token) {
+            Some(action) => action,
+            None => {
+                error!("ACTION表中没有状态({}, {})", state, token);
                 return false;
             }
+        };
+        debug!("state: {}, token: {}, action: {:?}", state, token, action);
+        // 如果是移进
+        if action.starts_with("s") {
+            debug!(
+                "移进: 将 {} 状态压入状态栈，将 {} 符号压入符号栈",
+                action, token
+            );
+            // 将状态压入状态栈
+            state_stack.push(action[1..].parse::<usize>().unwrap());
+            // 将输入缓冲区第一个元素压入符号栈
+            symbol_stack.push(buffer.pop_front().unwrap());
         }
-        // // 如果是移进
-        // if action.starts_with("s") {
-        //     // 将状态压入状态栈
-        //     state_stack.push(action[1..].parse::<usize>().unwrap());
-        //     // 将输入缓冲区第一个元素压入符号栈
-        //     symbol_stack.push(buffer.pop_front().unwrap());
-        // }
-        // // 如果是规约
-        // else if action.starts_with("r") {
-        //     // 获取产生式
-        //     let k = action[1..].parse::<usize>().unwrap();
-        //     let p = &g.p[k];
-        //     // 弹出状态栈中与产生式右部长度相同的元素
-        //     for _ in 0..p.right.len() {
-        //         state_stack.pop();
-        //     }
-        //     // 将产生式左部压入符号栈
-        //     symbol_stack.push(p.left.clone());
-        //     // 获取GOTO表中的状态
-        //     let s = state_stack.last().unwrap();
-        //     let state = GOTO[*s].get(&p.left).unwrap();
-        //     // 将状态压入状态栈
-        //     state_stack.push(state.parse::<usize>().unwrap());
-        // }
-        // // 如果是接受
-        // else if action == "acc" {
-        //     return true;
-        // }
-        // // 如果是错误
-        // else {
-        //     return false;
-        // }
+        // 如果是规约
+        else if action.starts_with("r") {
+            // 获取产生式
+            let k = action[1..].parse::<usize>().unwrap();
+            let p = &g.p[k];
+            debug!("规约: 按照第{}个产生式 {} 进行规约", k, p);
+            // 弹出状态栈中与产生式右部长度相同的元素
+            for _ in 0..p.right.len() {
+                state_stack.pop();
+                symbol_stack.pop();
+            }
+            // 将产生式左部压入符号栈
+            symbol_stack.push(p.left.clone());
+            // 获取GOTO表中的状态
+            let s = state_stack.last().unwrap();
+            let state = GOTO[*s].get(&p.left).unwrap();
+            // 将状态压入状态栈
+            state_stack.push(state.parse::<usize>().unwrap());
+        }
+        // 如果是接受
+        else if action == "acc" {
+            debug!("接受");
+            return true;
+        }
+        // 如果是错误
+        else {
+            error!("错误");
+            return false;
+        }
     }
 }
 
@@ -686,7 +676,10 @@ fn items_eq(items1: &Vec<Item>, items2: &Vec<Item>) -> bool {
 
 #[cfg(test)]
 mod tests {
-    use std::{fs::File, io::Write};
+    use std::{env::set_var, fs::File, io::Write};
+
+    use log::info;
+    use simplelog::*;
 
     use super::Grammar;
     use crate::parser::{
@@ -837,9 +830,23 @@ mod tests {
 
     #[test]
     fn test_slr1_analysis() {
-        let mut log = File::create("log.txt").unwrap();
+        CombinedLogger::init(vec![
+            TermLogger::new(
+                LevelFilter::Debug,
+                Config::default(),
+                TerminalMode::Mixed,
+                ColorChoice::Auto,
+            ),
+            WriteLogger::new(
+                LevelFilter::Debug,
+                Config::default(),
+                File::create("slr1.log").unwrap(),
+            ),
+        ])
+        .unwrap();
 
         let (tokens, success) = lexical_analysis(program.to_string()).unwrap();
+        info!("tokens: {:?}", tokens);
 
         let yml = std::fs::read_to_string("grammar.yml").unwrap();
         let g = Grammar::from_yml(&yml).unwrap();
@@ -847,32 +854,26 @@ mod tests {
             Ok(_) => {}
             Err(_) => panic!("grammar is not valid"),
         }
-        log.write_all(format!("grammar: {:#?}", g).as_bytes())
-            .unwrap();
+        info!("grammar: {:?}", g);
 
         let mut first = get_first(&g);
-        log.write_all(format!("first: {:#?}", first).as_bytes())
-            .unwrap();
         first.iter_mut().for_each(|(k, v)| {
             v.sort();
         });
+        info!("first: {:?}", first);
 
         let mut follow = get_follow(&g);
-        log.write_all(format!("follow: {:#?}", follow).as_bytes())
-            .unwrap();
         follow.iter_mut().for_each(|(k, v)| {
             v.sort();
         });
+        info!("follow: {:?}", follow);
 
         let (action, goto) = get_SLR1_table(&g);
-        log.write_all(format!("action: {:#?}", action).as_bytes())
-            .unwrap();
-        log.write_all(format!("goto: {:#?}", goto).as_bytes())
-            .unwrap();
-        println!("action: {:#?}", action);
-        println!("goto: {:#?}", goto);
+        info!("action: {:?}", action);
+        info!("goto: {:?}", goto);
 
         let mut slr1 = slr1_analysis(&g, &action, &goto, tokens);
-        println!("{:#?}", slr1);
+        info!("slr1: {:?}", slr1);
+        assert!(slr1);
     }
 }
