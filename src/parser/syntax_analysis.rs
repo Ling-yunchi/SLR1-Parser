@@ -171,7 +171,6 @@ fn get_SLR1_table(g: &Grammar) -> (Vec<HashMap<String, String>>, Vec<HashMap<Str
             else {
                 // 如果是S'->S.，则将ACTION[k, #]置为acc
                 if item.left == g.s {
-                    debug!("here!");
                     ACTION[i].insert("#".to_string(), "acc".to_string());
                 }
                 // 否则，对于任何终结符a∈FOLLOW(A)，将ACTION[k, a]置为rj
