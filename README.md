@@ -8,11 +8,11 @@ GUI采用tauri，但由于某些铸币😰操作，tauri界面的源码全部丢
 
 ## 使用
 
-想使用tauri的GUI请下载`app_0.0.0_x64_en-US.msi`(只有windows版)并安装。
+- 想使用tauri的GUI请下载`app_0.0.0_x64_en-US.msi`(只有windows版)并安装。
+- 命令行版本会读取当前目录下的`grammar.yml`文件作为文法，读取`program.txt`文件作为输入，输出会同步写入`slr1.log`日志文件。
+  - 文法示例参考`grammar_example.yml`。
 
 `src/parser`中包含了所有核心代码与~~基本完整的~~测试，使用方法应该看完测试就懂了。
-
-本项目支持使用yml自定义用于分析的文法，示例在`grammar_example.yml`中。
 
 💔注意：文法中最好不好包含`# ε`等特殊符号，可能会发生意想不到的错误。
 
