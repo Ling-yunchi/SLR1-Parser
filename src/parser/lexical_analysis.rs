@@ -153,6 +153,11 @@ fn process(input: Vec<String>) -> (Vec<Token>, bool) {
                                 token_value: number,
                             });
                         }
+                    } else {
+                        result.push(Token {
+                            token_type: TokenType::Constant,
+                            token_value: number,
+                        });
                     }
                 } else {
                     while let Some(next_char) = chars.peek() {

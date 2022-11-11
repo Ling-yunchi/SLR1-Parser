@@ -3,6 +3,7 @@ int main(int a, int b)
 {
     int res;
     res = a + b;
+    int c = 1.14514;
     int d = a;
     /*
     if (a < 0){
@@ -15,4 +16,13 @@ int main(int a, int b)
         res = 0;
     }
     */
+    if (a < 0) {
+        res = -a;
+    }
+    else{
+        while (b > 0){
+            b = b-1;
+        }
+        res = 0;
+    }
 }

@@ -1,589 +1,1018 @@
-08:46:46 [INFO] tokens:
-08:46:46 [INFO] value: "int", type: Keyword
-08:46:46 [INFO] value: "main", type: Identifier
-08:46:46 [INFO] value: "(", type: Delimiter
-08:46:46 [INFO] value: "int", type: Keyword
-08:46:46 [INFO] value: "a", type: Identifier
-08:46:46 [INFO] value: ",", type: Delimiter
-08:46:46 [INFO] value: "int", type: Keyword
-08:46:46 [INFO] value: "b", type: Identifier
-08:46:46 [INFO] value: ")", type: Delimiter
-08:46:46 [INFO] value: "{", type: Delimiter
-08:46:46 [INFO] value: "int", type: Keyword
-08:46:46 [INFO] value: "res", type: Identifier
-08:46:46 [INFO] value: ";", type: Delimiter
-08:46:46 [INFO] value: "res", type: Identifier
-08:46:46 [INFO] value: "=", type: Operator
-08:46:46 [INFO] value: "a", type: Identifier
-08:46:46 [INFO] value: "+", type: Operator
-08:46:46 [INFO] value: "b", type: Identifier
-08:46:46 [INFO] value: ";", type: Delimiter
-08:46:46 [INFO] value: "int", type: Keyword
-08:46:46 [INFO] value: "d", type: Identifier
-08:46:46 [INFO] value: "=", type: Operator
-08:46:46 [INFO] value: "a", type: Identifier
-08:46:46 [INFO] value: ";", type: Delimiter
-08:46:46 [INFO] value: "}", type: Delimiter
-08:46:46 [INFO] grammar:
-08:46:46 [INFO] s: 程序
-08:46:46 [INFO] v: ["程序'", "程序", "函数定义", "形式参数", "代码块", "变量类型", "算术表达式", "布尔表达式", "比较运算符", "算术运算符"]
-08:46:46 [INFO] t: ["id", "value", "(", ")", "{", "}", ",", ";", "=", "while", "if", "else", "return", "int", "float", "double", "bool", "char", "&&", "||", "!", "true", "false", "<", ">", "<=", ">=", "==", "!=", "-", "+", "*", "/"]
-08:46:46 [INFO] p:
-08:46:46 [INFO]   "程序'" -> "程序"
-08:46:46 [INFO]   "程序" -> "函数定义"
-08:46:46 [INFO]   "函数定义" -> "函数定义" "函数定义"
-08:46:46 [INFO]   "函数定义" -> "变量类型" "id" "(" ")" "{" "代码块" "}"
-08:46:46 [INFO]   "函数定义" -> "变量类型" "id" "(" "形式参数" ")" "{" "代码块" "}"
-08:46:46 [INFO]   "形式参数" -> "变量类型" "id"
-08:46:46 [INFO]   "形式参数" -> "变量类型" "id" "," "形式参数"
-08:46:46 [INFO]   "代码块" -> "代码块" "代码块"
-08:46:46 [INFO]   "代码块" -> "变量类型" "id" ";"
-08:46:46 [INFO]   "代码块" -> "变量类型" "id" "=" "算术表达式" ";"
-08:46:46 [INFO]   "代码块" -> "id" "=" "算术表达式" ";"
-08:46:46 [INFO]   "代码块" -> "while" "(" "布尔表达式" ")" "{" "代码块" "}"
-08:46:46 [INFO]   "代码块" -> "if" "(" "布尔表达式" ")" "{" "代码块" "}"
-08:46:46 [INFO]   "代码块" -> "if" "(" "布尔表达式" ")" "{" "代码块" "}" "else" "{" "代码块" "}"
-08:46:46 [INFO]   "代码块" -> "return" ";"
-08:46:46 [INFO]   "代码块" -> "return" "算术表达式" ";"
-08:46:46 [INFO]   "变量类型" -> "int"
-08:46:46 [INFO]   "变量类型" -> "float"
-08:46:46 [INFO]   "变量类型" -> "double"
-08:46:46 [INFO]   "变量类型" -> "bool"
-08:46:46 [INFO]   "变量类型" -> "char"
-08:46:46 [INFO]   "算术表达式" -> "算术表达式" "算术运算符" "算术表达式"
-08:46:46 [INFO]   "算术表达式" -> "-" "算术表达式"
-08:46:46 [INFO]   "算术表达式" -> "(" "算术表达式" ")"
-08:46:46 [INFO]   "算术表达式" -> "id"
-08:46:46 [INFO]   "算术表达式" -> "value"
-08:46:46 [INFO]   "布尔表达式" -> "算术表达式" "比较运算符" "算术表达式"
-08:46:46 [INFO]   "布尔表达式" -> "布尔表达式" "&&" "布尔表达式"
-08:46:46 [INFO]   "布尔表达式" -> "布尔表达式" "||" "布尔表达式"
-08:46:46 [INFO]   "布尔表达式" -> "!" "布尔表达式"
-08:46:46 [INFO]   "布尔表达式" -> "(" "布尔表达式" ")"
-08:46:46 [INFO]   "布尔表达式" -> "true"
-08:46:46 [INFO]   "布尔表达式" -> "false"
-08:46:46 [INFO]   "比较运算符" -> "<"
-08:46:46 [INFO]   "比较运算符" -> ">"
-08:46:46 [INFO]   "比较运算符" -> "<="
-08:46:46 [INFO]   "比较运算符" -> ">="
-08:46:46 [INFO]   "比较运算符" -> "=="
-08:46:46 [INFO]   "比较运算符" -> "!="
-08:46:46 [INFO]   "算术运算符" -> "+"
-08:46:46 [INFO]   "算术运算符" -> "-"
-08:46:46 [INFO]   "算术运算符" -> "*"
-08:46:46 [INFO]   "算术运算符" -> "/"
-08:46:46 [INFO] first:
-08:46:46 [INFO] FIRST("比较运算符") = ["!=", "<", "<=", "==", ">", ">="]
-08:46:46 [INFO] FIRST("{") = ["{"]
-08:46:46 [INFO] FIRST("(") = ["("]
-08:46:46 [INFO] FIRST("+") = ["+"]
-08:46:46 [INFO] FIRST(")") = [")"]
-08:46:46 [INFO] FIRST("算术运算符") = ["*", "+", "-", "/"]
-08:46:46 [INFO] FIRST("=") = ["="]
-08:46:46 [INFO] FIRST("double") = ["double"]
-08:46:46 [INFO] FIRST("形式参数") = ["bool", "char", "double", "float", "int"]
-08:46:46 [INFO] FIRST("代码块") = ["bool", "char", "double", "float", "id", "if", "int", "return", "while"]
-08:46:46 [INFO] FIRST("<") = ["<"]
-08:46:46 [INFO] FIRST(";") = [";"]
-08:46:46 [INFO] FIRST("程序'") = []
-08:46:46 [INFO] FIRST("false") = ["false"]
-08:46:46 [INFO] FIRST("函数定义") = ["bool", "char", "double", "float", "int"]
-08:46:46 [INFO] FIRST("算术表达式") = ["(", "-", "id", "value"]
-08:46:46 [INFO] FIRST("&&") = ["&&"]
-08:46:46 [INFO] FIRST("while") = ["while"]
-08:46:46 [INFO] FIRST("float") = ["float"]
-08:46:46 [INFO] FIRST("char") = ["char"]
-08:46:46 [INFO] FIRST("/") = ["/"]
-08:46:46 [INFO] FIRST("布尔表达式") = ["!", "(", "-", "false", "id", "true", "value"]
-08:46:46 [INFO] FIRST(">") = [">"]
-08:46:46 [INFO] FIRST("return") = ["return"]
-08:46:46 [INFO] FIRST("==") = ["=="]
-08:46:46 [INFO] FIRST("}") = ["}"]
-08:46:46 [INFO] FIRST("int") = ["int"]
-08:46:46 [INFO] FIRST("bool") = ["bool"]
-08:46:46 [INFO] FIRST("<=") = ["<="]
-08:46:46 [INFO] FIRST("-") = ["-"]
-08:46:46 [INFO] FIRST(">=") = [">="]
-08:46:46 [INFO] FIRST("*") = ["*"]
-08:46:46 [INFO] FIRST("value") = ["value"]
-08:46:46 [INFO] FIRST("else") = ["else"]
-08:46:46 [INFO] FIRST("变量类型") = ["bool", "char", "double", "float", "int"]
-08:46:46 [INFO] FIRST("程序") = []
-08:46:46 [INFO] FIRST(",") = [","]
-08:46:46 [INFO] FIRST("!=") = ["!="]
-08:46:46 [INFO] FIRST("if") = ["if"]
-08:46:46 [INFO] FIRST("||") = ["||"]
-08:46:46 [INFO] FIRST("id") = ["id"]
-08:46:46 [INFO] FIRST("true") = ["true"]
-08:46:46 [INFO] FIRST("!") = ["!"]
-08:46:46 [INFO] follow:
-08:46:46 [INFO] FOLLOW("代码块") = ["bool", "char", "double", "float", "id", "if", "int", "return", "while", "}"]
-08:46:46 [INFO] FOLLOW("函数定义") = ["#", "bool", "char", "double", "float", "int"]
-08:46:46 [INFO] FOLLOW("程序") = ["#"]
-08:46:46 [INFO] FOLLOW("算术表达式") = ["!=", ")", "*", "+", "-", "/", ";", "<", "<=", "==", ">", ">="]
-08:46:46 [INFO] FOLLOW("形式参数") = [")"]
-08:46:46 [INFO] FOLLOW("程序'") = []
-08:46:46 [INFO] FOLLOW("算术运算符") = ["(", "-", "id", "value"]
-08:46:46 [INFO] FOLLOW("变量类型") = ["id"]
-08:46:46 [INFO] FOLLOW("比较运算符") = ["(", "-", "id", "value"]
-08:46:46 [INFO] FOLLOW("布尔表达式") = ["&&", ")", "||"]
-08:46:48 [INFO] action:
-08:46:48 [INFO]       id    value (     )     {     }     ,     ;     =     while if    else  returnint   float doublebool  char  &&    ||    !     true  false <     >     <=    >=    ==    !=    -     +     *     /     #     
-08:46:48 [INFO] 0                                                                                   s4    s5    s6    s7    s8                                                                                                    
-08:46:48 [INFO] 1                                                                                                                                                                                                           acc   
-08:46:48 [INFO] 2                                                                                   s4    s5    s6    s7    s8                                                                                              r1    
-08:46:48 [INFO] 3     s10                                                                                                                                                                                                         
-08:46:48 [INFO] 4     r16                                                                                                                                                                                                         
-08:46:48 [INFO] 5     r17                                                                                                                                                                                                         
-08:46:48 [INFO] 6     r18                                                                                                                                                                                                         
-08:46:48 [INFO] 7     r19                                                                                                                                                                                                         
-08:46:48 [INFO] 8     r20                                                                                                                                                                                                         
-08:46:48 [INFO] 9                                                                                   s4    s5    s6    s7    s8                                                                                              r2    
-08:46:48 [INFO] 10                s11                                                                                                                                                                                             
-08:46:48 [INFO] 11                      s14                                                         s4    s5    s6    s7    s8                                                                                                    
-08:46:48 [INFO] 12                      s15                                                                                                                                                                                       
-08:46:48 [INFO] 13    s16                                                                                                                                                                                                         
-08:46:48 [INFO] 14                            s17                                                                                                                                                                                 
-08:46:48 [INFO] 15                            s18                                                                                                                                                                                 
-08:46:48 [INFO] 16                      r5                s19                                                                                                                                                                     
-08:46:48 [INFO] 17    s22                                                   s23   s24         s25   s4    s5    s6    s7    s8                                                                                                    
-08:46:48 [INFO] 18    s22                                                   s23   s24         s25   s4    s5    s6    s7    s8                                                                                                    
-08:46:48 [INFO] 19                                                                                  s4    s5    s6    s7    s8                                                                                                    
-08:46:48 [INFO] 20    s22                           s29                     s23   s24         s25   s4    s5    s6    s7    s8                                                                                                    
-08:46:48 [INFO] 21    s30                                                                                                                                                                                                         
-08:46:48 [INFO] 22                                                    s31                                                                                                                                                         
-08:46:48 [INFO] 23                s32                                                                                                                                                                                             
-08:46:48 [INFO] 24                s33                                                                                                                                                                                             
-08:46:48 [INFO] 25    s35   s36   s37                           s38                                                                                                                                 s39                           
-08:46:48 [INFO] 26    s22                           s40                     s23   s24         s25   s4    s5    s6    s7    s8                                                                                                    
-08:46:48 [INFO] 27                      r6                                                                                                                                                                                        
-08:46:48 [INFO] 28    s22                           r7                      s23   s24         s25   s4    s5    s6    s7    s8                                                                                                    
-08:46:48 [INFO] 29                                                                                  r3    r3    r3    r3    r3                                                                                              r3    
-08:46:48 [INFO] 30                                              s41   s42                                                                                                                                                         
-08:46:48 [INFO] 31    s35   s36   s37                                                                                                                                                               s39                           
-08:46:48 [INFO] 32    s35   s36   s46                                                                                                         s47   s48   s49                                       s39                           
-08:46:48 [INFO] 33    s35   s36   s46                                                                                                         s47   s48   s49                                       s39                           
-08:46:48 [INFO] 34                                              s52                                                                                                                                 s53   s54   s55   s56         
-08:46:48 [INFO] 35                      r24                     r24                                                                                             r24   r24   r24   r24   r24   r24   r24   r24   r24   r24         
-08:46:48 [INFO] 36                      r25                     r25                                                                                             r25   r25   r25   r25   r25   r25   r25   r25   r25   r25         
-08:46:48 [INFO] 37    s35   s36   s37                                                                                                                                                               s39                           
-08:46:48 [INFO] 38    r14                           r14                     r14   r14         r14   r14   r14   r14   r14   r14                                                                                                   
-08:46:48 [INFO] 39    s35   s36   s37                                                                                                                                                               s39                           
-08:46:48 [INFO] 40                                                                                  r4    r4    r4    r4    r4                                                                                              r4    
-08:46:48 [INFO] 41    r8                            r8                      r8    r8          r8    r8    r8    r8    r8    r8                                                                                                    
-08:46:48 [INFO] 42    s35   s36   s37                                                                                                                                                               s39                           
-08:46:48 [INFO] 43                                              s60                                                                                                                                 s53   s54   s55   s56         
-08:46:48 [INFO] 44                                                                                                                                              s62   s63   s64   s65   s66   s67   s53   s54   s55   s56         
-08:46:48 [INFO] 45                      s68                                                                                       s69   s70                                                                                       
-08:46:48 [INFO] 46    s35   s36   s46                                                                                                         s47   s48   s49                                       s39                           
-08:46:48 [INFO] 47    s35   s36   s46                                                                                                         s47   s48   s49                                       s39                           
-08:46:48 [INFO] 48                      r31                                                                                       r31   r31                                                                                       
-08:46:48 [INFO] 49                      r32                                                                                       r32   r32                                                                                       
-08:46:48 [INFO] 50                      s74                                                                                       s69   s70                                                                                       
-08:46:48 [INFO] 51    s35   s36   s37                                                                                                                                                               s39                           
-08:46:48 [INFO] 52    r15                           r15                     r15   r15         r15   r15   r15   r15   r15   r15                                                                                                   
-08:46:48 [INFO] 53    r40   r40   r40                                                                                                                                                               r40                           
-08:46:48 [INFO] 54    r39   r39   r39                                                                                                                                                               r39                           
-08:46:48 [INFO] 55    r41   r41   r41                                                                                                                                                               r41                           
-08:46:48 [INFO] 56    r42   r42   r42                                                                                                                                                               r42                           
-08:46:48 [INFO] 57                      s76                                                                                                                                                         s53   s54   s55   s56         
-08:46:48 [INFO] 58                      r22                     r22                                                                                             r22   r22   r22   r22   r22   r22   s53   s54   s55   s56         
-08:46:48 [INFO] 59                                              s77                                                                                                                                 s53   s54   s55   s56         
-08:46:48 [INFO] 60    r10                           r10                     r10   r10         r10   r10   r10   r10   r10   r10                                                                                                   
-08:46:48 [INFO] 61    s35   s36   s37                                                                                                                                                               s39                           
-08:46:48 [INFO] 62    r33   r33   r33                                                                                                                                                               r33                           
-08:46:48 [INFO] 63    r34   r34   r34                                                                                                                                                               r34                           
-08:46:48 [INFO] 64    r35   r35   r35                                                                                                                                                               r35                           
-08:46:48 [INFO] 65    r36   r36   r36                                                                                                                                                               r36                           
-08:46:48 [INFO] 66    r37   r37   r37                                                                                                                                                               r37                           
-08:46:48 [INFO] 67    r38   r38   r38                                                                                                                                                               r38                           
-08:46:48 [INFO] 68                            s79                                                                                                                                                                                 
-08:46:48 [INFO] 69    s35   s36   s46                                                                                                         s47   s48   s49                                       s39                           
-08:46:48 [INFO] 70    s35   s36   s46                                                                                                         s47   s48   s49                                       s39                           
-08:46:48 [INFO] 71                      s76                                                                                                                     s62   s63   s64   s65   s66   s67   s53   s54   s55   s56         
-08:46:48 [INFO] 72                      s82                                                                                       s69   s70                                                                                       
-08:46:48 [INFO] 73                      r29                                                                                       s69   s70                                                                                       
-08:46:48 [INFO] 74                            s83                                                                                                                                                                                 
-08:46:48 [INFO] 75                      r21                     r21                                                                                             r21   r21   r21   r21   r21   r21   s53   s54   s55   s56         
-08:46:48 [INFO] 76                      r23                     r23                                                                                             r23   r23   r23   r23   r23   r23   r23   r23   r23   r23         
-08:46:48 [INFO] 77    r9                            r9                      r9    r9          r9    r9    r9    r9    r9    r9                                                                                                    
-08:46:48 [INFO] 78                      r26                                                                                       r26   r26                                                         s53   s54   s55   s56         
-08:46:48 [INFO] 79    s22                                                   s23   s24         s25   s4    s5    s6    s7    s8                                                                                                    
-08:46:48 [INFO] 80                      r27                                                                                       s69   s70                                                                                       
-08:46:48 [INFO] 81                      r28                                                                                       s69   s70                                                                                       
-08:46:48 [INFO] 82                      r30                                                                                       r30   r30                                                                                       
-08:46:48 [INFO] 83    s22                                                   s23   s24         s25   s4    s5    s6    s7    s8                                                                                                    
-08:46:48 [INFO] 84    s22                           s86                     s23   s24         s25   s4    s5    s6    s7    s8                                                                                                    
-08:46:48 [INFO] 85    s22                           s87                     s23   s24         s25   s4    s5    s6    s7    s8                                                                                                    
-08:46:48 [INFO] 86    r11                           r11                     r11   r11         r11   r11   r11   r11   r11   r11                                                                                                   
-08:46:48 [INFO] 87    r12                           r12                     r12   r12   s88   r12   r12   r12   r12   r12   r12                                                                                                   
-08:46:48 [INFO] 88                            s89                                                                                                                                                                                 
-08:46:48 [INFO] 89    s22                                                   s23   s24         s25   s4    s5    s6    s7    s8                                                                                                    
-08:46:48 [INFO] 90    s22                           s91                     s23   s24         s25   s4    s5    s6    s7    s8                                                                                                    
-08:46:48 [INFO] 91    r13                           r13                     r13   r13         r13   r13   r13   r13   r13   r13                                                                                                   
-08:46:48 [INFO] goto:
-08:46:48 [INFO]           程序'       程序        函数定义      形式参数      代码块       变量类型      算术表达式     布尔表达式     比较运算符     算术运算符     
-08:46:48 [INFO] 0                   1         2                             3                                                 
-08:46:48 [INFO] 1                                                                                                             
-08:46:48 [INFO] 2                             9                             3                                                 
-08:46:48 [INFO] 3                                                                                                             
-08:46:48 [INFO] 4                                                                                                             
-08:46:48 [INFO] 5                                                                                                             
-08:46:48 [INFO] 6                                                                                                             
-08:46:48 [INFO] 7                                                                                                             
-08:46:48 [INFO] 8                                                                                                             
-08:46:48 [INFO] 9                             9                             3                                                 
-08:46:48 [INFO] 10                                                                                                            
-08:46:48 [INFO] 11                                      12                  13                                                
-08:46:48 [INFO] 12                                                                                                            
-08:46:48 [INFO] 13                                                                                                            
-08:46:48 [INFO] 14                                                                                                            
-08:46:48 [INFO] 15                                                                                                            
-08:46:48 [INFO] 16                                                                                                            
-08:46:48 [INFO] 17                                                20        21                                                
-08:46:48 [INFO] 18                                                26        21                                                
-08:46:48 [INFO] 19                                      27                  13                                                
-08:46:48 [INFO] 20                                                28        21                                                
-08:46:48 [INFO] 21                                                                                                            
-08:46:48 [INFO] 22                                                                                                            
-08:46:48 [INFO] 23                                                                                                            
-08:46:48 [INFO] 24                                                                                                            
-08:46:48 [INFO] 25                                                                    34                                      
-08:46:48 [INFO] 26                                                28        21                                                
-08:46:48 [INFO] 27                                                                                                            
-08:46:48 [INFO] 28                                                28        21                                                
-08:46:48 [INFO] 29                                                                                                            
-08:46:48 [INFO] 30                                                                                                            
-08:46:48 [INFO] 31                                                                    43                                      
-08:46:48 [INFO] 32                                                                    44        45                            
-08:46:48 [INFO] 33                                                                    44        50                            
-08:46:48 [INFO] 34                                                                                                  51        
-08:46:48 [INFO] 35                                                                                                            
-08:46:48 [INFO] 36                                                                                                            
-08:46:48 [INFO] 37                                                                    57                                      
-08:46:48 [INFO] 38                                                                                                            
-08:46:48 [INFO] 39                                                                    58                                      
-08:46:48 [INFO] 40                                                                                                            
-08:46:48 [INFO] 41                                                                                                            
-08:46:48 [INFO] 42                                                                    59                                      
-08:46:48 [INFO] 43                                                                                                  51        
-08:46:48 [INFO] 44                                                                                        61        51        
-08:46:48 [INFO] 45                                                                                                            
-08:46:48 [INFO] 46                                                                    71        72                            
-08:46:48 [INFO] 47                                                                    44        73                            
-08:46:48 [INFO] 48                                                                                                            
-08:46:48 [INFO] 49                                                                                                            
-08:46:48 [INFO] 50                                                                                                            
-08:46:48 [INFO] 51                                                                    75                                      
-08:46:48 [INFO] 52                                                                                                            
-08:46:48 [INFO] 53                                                                                                            
-08:46:48 [INFO] 54                                                                                                            
-08:46:48 [INFO] 55                                                                                                            
-08:46:48 [INFO] 56                                                                                                            
-08:46:48 [INFO] 57                                                                                                  51        
-08:46:48 [INFO] 58                                                                                                  51        
-08:46:48 [INFO] 59                                                                                                  51        
-08:46:48 [INFO] 60                                                                                                            
-08:46:48 [INFO] 61                                                                    78                                      
-08:46:48 [INFO] 62                                                                                                            
-08:46:48 [INFO] 63                                                                                                            
-08:46:48 [INFO] 64                                                                                                            
-08:46:48 [INFO] 65                                                                                                            
-08:46:48 [INFO] 66                                                                                                            
-08:46:48 [INFO] 67                                                                                                            
-08:46:48 [INFO] 68                                                                                                            
-08:46:48 [INFO] 69                                                                    44        80                            
-08:46:48 [INFO] 70                                                                    44        81                            
-08:46:48 [INFO] 71                                                                                        61        51        
-08:46:48 [INFO] 72                                                                                                            
-08:46:48 [INFO] 73                                                                                                            
-08:46:48 [INFO] 74                                                                                                            
-08:46:48 [INFO] 75                                                                                                  51        
-08:46:48 [INFO] 76                                                                                                            
-08:46:48 [INFO] 77                                                                                                            
-08:46:48 [INFO] 78                                                                                                  51        
-08:46:48 [INFO] 79                                                84        21                                                
-08:46:48 [INFO] 80                                                                                                            
-08:46:48 [INFO] 81                                                                                                            
-08:46:48 [INFO] 82                                                                                                            
-08:46:48 [INFO] 83                                                85        21                                                
-08:46:48 [INFO] 84                                                28        21                                                
-08:46:48 [INFO] 85                                                28        21                                                
-08:46:48 [INFO] 86                                                                                                            
-08:46:48 [INFO] 87                                                                                                            
-08:46:48 [INFO] 88                                                                                                            
-08:46:48 [INFO] 89                                                90        21                                                
-08:46:48 [INFO] 90                                                28        21                                                
-08:46:48 [INFO] 91                                                                                                            
-08:46:48 [INFO] init buffer: ["int", "id", "(", "int", "id", ",", "int", "id", ")", "{", "int", "id", ";", "id", "=", "id", "+", "id", ";", "int", "id", "=", "id", ";", "}", "#"]
-08:46:48 [INFO] -----step 1-----
-08:46:48 [INFO] state_stack: [0]
-08:46:48 [INFO] symbol_stack: ["#"]
-08:46:48 [INFO] buffer: ["int", "id", "(", "int", "id", ",", "int", "id", ")", "{", "int", "id", ";", "id", "=", "id", "+", "id", ";", "int", "id", "=", "id", ";", "}", "#"]
-08:46:48 [INFO] state: 0, token: int, action: "s4"
-08:46:48 [INFO] 移进: 将 s4 状态压入状态栈，将 int 符号压入符号栈
-08:46:48 [INFO] -----step 2-----
-08:46:48 [INFO] state_stack: [0, 4]
-08:46:48 [INFO] symbol_stack: ["#", "int"]
-08:46:48 [INFO] buffer: ["id", "(", "int", "id", ",", "int", "id", ")", "{", "int", "id", ";", "id", "=", "id", "+", "id", ";", "int", "id", "=", "id", ";", "}", "#"]
-08:46:48 [INFO] state: 4, token: id, action: "r16"
-08:46:48 [INFO] 规约: 按照第16个产生式 变量类型 -> int  进行规约
-08:46:48 [INFO] -----step 3-----
-08:46:48 [INFO] state_stack: [0, 3]
-08:46:48 [INFO] symbol_stack: ["#", "变量类型"]
-08:46:48 [INFO] buffer: ["id", "(", "int", "id", ",", "int", "id", ")", "{", "int", "id", ";", "id", "=", "id", "+", "id", ";", "int", "id", "=", "id", ";", "}", "#"]
-08:46:48 [INFO] state: 3, token: id, action: "s10"
-08:46:48 [INFO] 移进: 将 s10 状态压入状态栈，将 id 符号压入符号栈
-08:46:48 [INFO] -----step 4-----
-08:46:48 [INFO] state_stack: [0, 3, 10]
-08:46:48 [INFO] symbol_stack: ["#", "变量类型", "id"]
-08:46:48 [INFO] buffer: ["(", "int", "id", ",", "int", "id", ")", "{", "int", "id", ";", "id", "=", "id", "+", "id", ";", "int", "id", "=", "id", ";", "}", "#"]
-08:46:48 [INFO] state: 10, token: (, action: "s11"
-08:46:48 [INFO] 移进: 将 s11 状态压入状态栈，将 ( 符号压入符号栈
-08:46:48 [INFO] -----step 5-----
-08:46:48 [INFO] state_stack: [0, 3, 10, 11]
-08:46:48 [INFO] symbol_stack: ["#", "变量类型", "id", "("]
-08:46:48 [INFO] buffer: ["int", "id", ",", "int", "id", ")", "{", "int", "id", ";", "id", "=", "id", "+", "id", ";", "int", "id", "=", "id", ";", "}", "#"]
-08:46:48 [INFO] state: 11, token: int, action: "s4"
-08:46:48 [INFO] 移进: 将 s4 状态压入状态栈，将 int 符号压入符号栈
-08:46:48 [INFO] -----step 6-----
-08:46:48 [INFO] state_stack: [0, 3, 10, 11, 4]
-08:46:48 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "int"]
-08:46:48 [INFO] buffer: ["id", ",", "int", "id", ")", "{", "int", "id", ";", "id", "=", "id", "+", "id", ";", "int", "id", "=", "id", ";", "}", "#"]
-08:46:48 [INFO] state: 4, token: id, action: "r16"
-08:46:48 [INFO] 规约: 按照第16个产生式 变量类型 -> int  进行规约
-08:46:48 [INFO] -----step 7-----
-08:46:48 [INFO] state_stack: [0, 3, 10, 11, 13]
-08:46:48 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "变量类型"]
-08:46:48 [INFO] buffer: ["id", ",", "int", "id", ")", "{", "int", "id", ";", "id", "=", "id", "+", "id", ";", "int", "id", "=", "id", ";", "}", "#"]
-08:46:48 [INFO] state: 13, token: id, action: "s16"
-08:46:48 [INFO] 移进: 将 s16 状态压入状态栈，将 id 符号压入符号栈
-08:46:48 [INFO] -----step 8-----
-08:46:48 [INFO] state_stack: [0, 3, 10, 11, 13, 16]
-08:46:48 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "变量类型", "id"]
-08:46:48 [INFO] buffer: [",", "int", "id", ")", "{", "int", "id", ";", "id", "=", "id", "+", "id", ";", "int", "id", "=", "id", ";", "}", "#"]
-08:46:48 [INFO] state: 16, token: ,, action: "s19"
-08:46:48 [INFO] 移进: 将 s19 状态压入状态栈，将 , 符号压入符号栈
-08:46:48 [INFO] -----step 9-----
-08:46:48 [INFO] state_stack: [0, 3, 10, 11, 13, 16, 19]
-08:46:48 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "变量类型", "id", ","]
-08:46:48 [INFO] buffer: ["int", "id", ")", "{", "int", "id", ";", "id", "=", "id", "+", "id", ";", "int", "id", "=", "id", ";", "}", "#"]
-08:46:48 [INFO] state: 19, token: int, action: "s4"
-08:46:48 [INFO] 移进: 将 s4 状态压入状态栈，将 int 符号压入符号栈
-08:46:48 [INFO] -----step 10-----
-08:46:48 [INFO] state_stack: [0, 3, 10, 11, 13, 16, 19, 4]
-08:46:48 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "变量类型", "id", ",", "int"]
-08:46:48 [INFO] buffer: ["id", ")", "{", "int", "id", ";", "id", "=", "id", "+", "id", ";", "int", "id", "=", "id", ";", "}", "#"]
-08:46:48 [INFO] state: 4, token: id, action: "r16"
-08:46:48 [INFO] 规约: 按照第16个产生式 变量类型 -> int  进行规约
-08:46:48 [INFO] -----step 11-----
-08:46:48 [INFO] state_stack: [0, 3, 10, 11, 13, 16, 19, 13]
-08:46:48 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "变量类型", "id", ",", "变量类型"]
-08:46:48 [INFO] buffer: ["id", ")", "{", "int", "id", ";", "id", "=", "id", "+", "id", ";", "int", "id", "=", "id", ";", "}", "#"]
-08:46:48 [INFO] state: 13, token: id, action: "s16"
-08:46:48 [INFO] 移进: 将 s16 状态压入状态栈，将 id 符号压入符号栈
-08:46:48 [INFO] -----step 12-----
-08:46:48 [INFO] state_stack: [0, 3, 10, 11, 13, 16, 19, 13, 16]
-08:46:48 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "变量类型", "id", ",", "变量类型", "id"]
-08:46:48 [INFO] buffer: [")", "{", "int", "id", ";", "id", "=", "id", "+", "id", ";", "int", "id", "=", "id", ";", "}", "#"]
-08:46:48 [INFO] state: 16, token: ), action: "r5"
-08:46:48 [INFO] 规约: 按照第5个产生式 形式参数 -> 变量类型 id  进行规约
-08:46:48 [INFO] -----step 13-----
-08:46:48 [INFO] state_stack: [0, 3, 10, 11, 13, 16, 19, 27]
-08:46:48 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "变量类型", "id", ",", "形式参数"]
-08:46:48 [INFO] buffer: [")", "{", "int", "id", ";", "id", "=", "id", "+", "id", ";", "int", "id", "=", "id", ";", "}", "#"]
-08:46:48 [INFO] state: 27, token: ), action: "r6"
-08:46:48 [INFO] 规约: 按照第6个产生式 形式参数 -> 变量类型 id , 形式参数  进行规约
-08:46:48 [INFO] -----step 14-----
-08:46:48 [INFO] state_stack: [0, 3, 10, 11, 12]
-08:46:48 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数"]
-08:46:48 [INFO] buffer: [")", "{", "int", "id", ";", "id", "=", "id", "+", "id", ";", "int", "id", "=", "id", ";", "}", "#"]
-08:46:48 [INFO] state: 12, token: ), action: "s15"
-08:46:48 [INFO] 移进: 将 s15 状态压入状态栈，将 ) 符号压入符号栈
-08:46:48 [INFO] -----step 15-----
-08:46:48 [INFO] state_stack: [0, 3, 10, 11, 12, 15]
-08:46:48 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")"]
-08:46:48 [INFO] buffer: ["{", "int", "id", ";", "id", "=", "id", "+", "id", ";", "int", "id", "=", "id", ";", "}", "#"]
-08:46:48 [INFO] state: 15, token: {, action: "s18"
-08:46:48 [INFO] 移进: 将 s18 状态压入状态栈，将 { 符号压入符号栈
-08:46:48 [INFO] -----step 16-----
-08:46:48 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18]
-08:46:48 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{"]
-08:46:48 [INFO] buffer: ["int", "id", ";", "id", "=", "id", "+", "id", ";", "int", "id", "=", "id", ";", "}", "#"]
-08:46:48 [INFO] state: 18, token: int, action: "s4"
-08:46:48 [INFO] 移进: 将 s4 状态压入状态栈，将 int 符号压入符号栈
-08:46:48 [INFO] -----step 17-----
-08:46:48 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 4]
-08:46:48 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "int"]
-08:46:48 [INFO] buffer: ["id", ";", "id", "=", "id", "+", "id", ";", "int", "id", "=", "id", ";", "}", "#"]
-08:46:48 [INFO] state: 4, token: id, action: "r16"
-08:46:48 [INFO] 规约: 按照第16个产生式 变量类型 -> int  进行规约
-08:46:48 [INFO] -----step 18-----
-08:46:48 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 21]
-08:46:48 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "变量类型"]
-08:46:48 [INFO] buffer: ["id", ";", "id", "=", "id", "+", "id", ";", "int", "id", "=", "id", ";", "}", "#"]
-08:46:48 [INFO] state: 21, token: id, action: "s30"
-08:46:48 [INFO] 移进: 将 s30 状态压入状态栈，将 id 符号压入符号栈
-08:46:48 [INFO] -----step 19-----
-08:46:48 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 21, 30]
-08:46:48 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "变量类型", "id"]
-08:46:48 [INFO] buffer: [";", "id", "=", "id", "+", "id", ";", "int", "id", "=", "id", ";", "}", "#"]
-08:46:48 [INFO] state: 30, token: ;, action: "s41"
-08:46:48 [INFO] 移进: 将 s41 状态压入状态栈，将 ; 符号压入符号栈
-08:46:48 [INFO] -----step 20-----
-08:46:48 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 21, 30, 41]
-08:46:48 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "变量类型", "id", ";"]
-08:46:48 [INFO] buffer: ["id", "=", "id", "+", "id", ";", "int", "id", "=", "id", ";", "}", "#"]
-08:46:48 [INFO] state: 41, token: id, action: "r8"
-08:46:48 [INFO] 规约: 按照第8个产生式 代码块 -> 变量类型 id ;  进行规约
-08:46:48 [INFO] -----step 21-----
-08:46:48 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26]
-08:46:48 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块"]
-08:46:48 [INFO] buffer: ["id", "=", "id", "+", "id", ";", "int", "id", "=", "id", ";", "}", "#"]
-08:46:48 [INFO] state: 26, token: id, action: "s22"
-08:46:48 [INFO] 移进: 将 s22 状态压入状态栈，将 id 符号压入符号栈
-08:46:48 [INFO] -----step 22-----
-08:46:48 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 22]
-08:46:48 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "id"]
-08:46:48 [INFO] buffer: ["=", "id", "+", "id", ";", "int", "id", "=", "id", ";", "}", "#"]
-08:46:48 [INFO] state: 22, token: =, action: "s31"
-08:46:48 [INFO] 移进: 将 s31 状态压入状态栈，将 = 符号压入符号栈
-08:46:48 [INFO] -----step 23-----
-08:46:48 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 22, 31]
-08:46:48 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "id", "="]
-08:46:48 [INFO] buffer: ["id", "+", "id", ";", "int", "id", "=", "id", ";", "}", "#"]
-08:46:48 [INFO] state: 31, token: id, action: "s35"
-08:46:48 [INFO] 移进: 将 s35 状态压入状态栈，将 id 符号压入符号栈
-08:46:48 [INFO] -----step 24-----
-08:46:48 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 22, 31, 35]
-08:46:48 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "id", "=", "id"]
-08:46:48 [INFO] buffer: ["+", "id", ";", "int", "id", "=", "id", ";", "}", "#"]
-08:46:48 [INFO] state: 35, token: +, action: "r24"
-08:46:48 [INFO] 规约: 按照第24个产生式 算术表达式 -> id  进行规约
-08:46:48 [INFO] -----step 25-----
-08:46:48 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 22, 31, 43]
-08:46:48 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "id", "=", "算术表达式"]
-08:46:48 [INFO] buffer: ["+", "id", ";", "int", "id", "=", "id", ";", "}", "#"]
-08:46:48 [INFO] state: 43, token: +, action: "s54"
-08:46:48 [INFO] 移进: 将 s54 状态压入状态栈，将 + 符号压入符号栈
-08:46:48 [INFO] -----step 26-----
-08:46:48 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 22, 31, 43, 54]
-08:46:48 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "id", "=", "算术表达式", "+"]
-08:46:48 [INFO] buffer: ["id", ";", "int", "id", "=", "id", ";", "}", "#"]
-08:46:48 [INFO] state: 54, token: id, action: "r39"
-08:46:48 [INFO] 规约: 按照第39个产生式 算术运算符 -> +  进行规约
-08:46:48 [INFO] -----step 27-----
-08:46:48 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 22, 31, 43, 51]
-08:46:48 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "id", "=", "算术表达式", "算术运算符"]
-08:46:48 [INFO] buffer: ["id", ";", "int", "id", "=", "id", ";", "}", "#"]
-08:46:48 [INFO] state: 51, token: id, action: "s35"
-08:46:48 [INFO] 移进: 将 s35 状态压入状态栈，将 id 符号压入符号栈
-08:46:48 [INFO] -----step 28-----
-08:46:48 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 22, 31, 43, 51, 35]
-08:46:48 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "id", "=", "算术表达式", "算术运算符", "id"]
-08:46:48 [INFO] buffer: [";", "int", "id", "=", "id", ";", "}", "#"]
-08:46:48 [INFO] state: 35, token: ;, action: "r24"
-08:46:48 [INFO] 规约: 按照第24个产生式 算术表达式 -> id  进行规约
-08:46:48 [INFO] -----step 29-----
-08:46:48 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 22, 31, 43, 51, 75]
-08:46:48 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "id", "=", "算术表达式", "算术运算符", "算术表达式"]
-08:46:48 [INFO] buffer: [";", "int", "id", "=", "id", ";", "}", "#"]
-08:46:48 [INFO] state: 75, token: ;, action: "r21"
-08:46:48 [INFO] 规约: 按照第21个产生式 算术表达式 -> 算术表达式 算术运算符 算术表达式  进行规约
-08:46:48 [INFO] -----step 30-----
-08:46:48 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 22, 31, 43]
-08:46:48 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "id", "=", "算术表达式"]
-08:46:48 [INFO] buffer: [";", "int", "id", "=", "id", ";", "}", "#"]
-08:46:48 [INFO] state: 43, token: ;, action: "s60"
-08:46:48 [INFO] 移进: 将 s60 状态压入状态栈，将 ; 符号压入符号栈
-08:46:48 [INFO] -----step 31-----
-08:46:48 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 22, 31, 43, 60]
-08:46:48 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "id", "=", "算术表达式", ";"]
-08:46:48 [INFO] buffer: ["int", "id", "=", "id", ";", "}", "#"]
-08:46:48 [INFO] state: 60, token: int, action: "r10"
-08:46:48 [INFO] 规约: 按照第10个产生式 代码块 -> id = 算术表达式 ;  进行规约
-08:46:48 [INFO] -----step 32-----
-08:46:48 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28]
-08:46:48 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块"]
-08:46:48 [INFO] buffer: ["int", "id", "=", "id", ";", "}", "#"]
-08:46:48 [INFO] state: 28, token: int, action: "s4"
-08:46:48 [INFO] 移进: 将 s4 状态压入状态栈，将 int 符号压入符号栈
-08:46:48 [INFO] -----step 33-----
-08:46:48 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 4]
-08:46:48 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "int"]
-08:46:48 [INFO] buffer: ["id", "=", "id", ";", "}", "#"]
-08:46:48 [INFO] state: 4, token: id, action: "r16"
-08:46:48 [INFO] 规约: 按照第16个产生式 变量类型 -> int  进行规约
-08:46:48 [INFO] -----step 34-----
-08:46:48 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 21]
-08:46:48 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "变量类型"]
-08:46:48 [INFO] buffer: ["id", "=", "id", ";", "}", "#"]
-08:46:48 [INFO] state: 21, token: id, action: "s30"
-08:46:48 [INFO] 移进: 将 s30 状态压入状态栈，将 id 符号压入符号栈
-08:46:48 [INFO] -----step 35-----
-08:46:48 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 21, 30]
-08:46:48 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "变量类型", "id"]
-08:46:48 [INFO] buffer: ["=", "id", ";", "}", "#"]
-08:46:48 [INFO] state: 30, token: =, action: "s42"
-08:46:48 [INFO] 移进: 将 s42 状态压入状态栈，将 = 符号压入符号栈
-08:46:48 [INFO] -----step 36-----
-08:46:48 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 21, 30, 42]
-08:46:48 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "变量类型", "id", "="]
-08:46:48 [INFO] buffer: ["id", ";", "}", "#"]
-08:46:48 [INFO] state: 42, token: id, action: "s35"
-08:46:48 [INFO] 移进: 将 s35 状态压入状态栈，将 id 符号压入符号栈
-08:46:48 [INFO] -----step 37-----
-08:46:48 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 21, 30, 42, 35]
-08:46:48 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "变量类型", "id", "=", "id"]
-08:46:48 [INFO] buffer: [";", "}", "#"]
-08:46:48 [INFO] state: 35, token: ;, action: "r24"
-08:46:48 [INFO] 规约: 按照第24个产生式 算术表达式 -> id  进行规约
-08:46:48 [INFO] -----step 38-----
-08:46:48 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 21, 30, 42, 59]
-08:46:48 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "变量类型", "id", "=", "算术表达式"]
-08:46:48 [INFO] buffer: [";", "}", "#"]
-08:46:48 [INFO] state: 59, token: ;, action: "s77"
-08:46:48 [INFO] 移进: 将 s77 状态压入状态栈，将 ; 符号压入符号栈
-08:46:48 [INFO] -----step 39-----
-08:46:48 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 21, 30, 42, 59, 77]
-08:46:48 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "变量类型", "id", "=", "算术表达式", ";"]
-08:46:48 [INFO] buffer: ["}", "#"]
-08:46:48 [INFO] state: 77, token: }, action: "r9"
-08:46:48 [INFO] 规约: 按照第9个产生式 代码块 -> 变量类型 id = 算术表达式 ;  进行规约
-08:46:48 [INFO] -----step 40-----
-08:46:48 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28]
-08:46:48 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块"]
-08:46:48 [INFO] buffer: ["}", "#"]
-08:46:48 [INFO] state: 28, token: }, action: "r7"
-08:46:48 [INFO] 规约: 按照第7个产生式 代码块 -> 代码块 代码块  进行规约
-08:46:48 [INFO] -----step 41-----
-08:46:48 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28]
-08:46:48 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块"]
-08:46:48 [INFO] buffer: ["}", "#"]
-08:46:48 [INFO] state: 28, token: }, action: "r7"
-08:46:48 [INFO] 规约: 按照第7个产生式 代码块 -> 代码块 代码块  进行规约
-08:46:48 [INFO] -----step 42-----
-08:46:48 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26]
-08:46:48 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块"]
-08:46:48 [INFO] buffer: ["}", "#"]
-08:46:48 [INFO] state: 26, token: }, action: "s40"
-08:46:48 [INFO] 移进: 将 s40 状态压入状态栈，将 } 符号压入符号栈
-08:46:48 [INFO] -----step 43-----
-08:46:48 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 40]
-08:46:48 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "}"]
-08:46:48 [INFO] buffer: ["#"]
-08:46:48 [INFO] state: 40, token: #, action: "r4"
-08:46:48 [INFO] 规约: 按照第4个产生式 函数定义 -> 变量类型 id ( 形式参数 ) { 代码块 }  进行规约
-08:46:48 [INFO] -----step 44-----
-08:46:48 [INFO] state_stack: [0, 2]
-08:46:48 [INFO] symbol_stack: ["#", "函数定义"]
-08:46:48 [INFO] buffer: ["#"]
-08:46:48 [INFO] state: 2, token: #, action: "r1"
-08:46:48 [INFO] 规约: 按照第1个产生式 程序 -> 函数定义  进行规约
-08:46:48 [INFO] -----step 45-----
-08:46:48 [INFO] state_stack: [0, 1]
-08:46:48 [INFO] symbol_stack: ["#", "程序"]
-08:46:48 [INFO] buffer: ["#"]
-08:46:48 [INFO] state: 1, token: #, action: "acc"
-08:46:48 [INFO] 接受
-08:46:48 [INFO] slr1 success: true
+10:16:01 [INFO] tokens:
+10:16:01 [INFO] value: "int", type: Keyword
+10:16:01 [INFO] value: "main", type: Identifier
+10:16:01 [INFO] value: "(", type: Delimiter
+10:16:01 [INFO] value: "int", type: Keyword
+10:16:01 [INFO] value: "a", type: Identifier
+10:16:01 [INFO] value: ",", type: Delimiter
+10:16:01 [INFO] value: "int", type: Keyword
+10:16:01 [INFO] value: "b", type: Identifier
+10:16:01 [INFO] value: ")", type: Delimiter
+10:16:01 [INFO] value: "{", type: Delimiter
+10:16:01 [INFO] value: "int", type: Keyword
+10:16:01 [INFO] value: "res", type: Identifier
+10:16:01 [INFO] value: ";", type: Delimiter
+10:16:01 [INFO] value: "res", type: Identifier
+10:16:01 [INFO] value: "=", type: Operator
+10:16:01 [INFO] value: "a", type: Identifier
+10:16:01 [INFO] value: "+", type: Operator
+10:16:01 [INFO] value: "b", type: Identifier
+10:16:01 [INFO] value: ";", type: Delimiter
+10:16:01 [INFO] value: "int", type: Keyword
+10:16:01 [INFO] value: "c", type: Identifier
+10:16:01 [INFO] value: "=", type: Operator
+10:16:01 [INFO] value: "1.14514", type: Constant
+10:16:01 [INFO] value: ";", type: Delimiter
+10:16:01 [INFO] value: "int", type: Keyword
+10:16:01 [INFO] value: "d", type: Identifier
+10:16:01 [INFO] value: "=", type: Operator
+10:16:01 [INFO] value: "a", type: Identifier
+10:16:01 [INFO] value: ";", type: Delimiter
+10:16:01 [INFO] value: "if", type: Keyword
+10:16:01 [INFO] value: "(", type: Delimiter
+10:16:01 [INFO] value: "a", type: Identifier
+10:16:01 [INFO] value: "<", type: Operator
+10:16:01 [INFO] value: "0", type: Constant
+10:16:01 [INFO] value: ")", type: Delimiter
+10:16:01 [INFO] value: "{", type: Delimiter
+10:16:01 [INFO] value: "res", type: Identifier
+10:16:01 [INFO] value: "=", type: Operator
+10:16:01 [INFO] value: "-", type: Operator
+10:16:01 [INFO] value: "a", type: Identifier
+10:16:01 [INFO] value: ";", type: Delimiter
+10:16:01 [INFO] value: "}", type: Delimiter
+10:16:01 [INFO] value: "else", type: Keyword
+10:16:01 [INFO] value: "{", type: Delimiter
+10:16:01 [INFO] value: "while", type: Keyword
+10:16:01 [INFO] value: "(", type: Delimiter
+10:16:01 [INFO] value: "b", type: Identifier
+10:16:01 [INFO] value: ">", type: Operator
+10:16:01 [INFO] value: "0", type: Constant
+10:16:01 [INFO] value: ")", type: Delimiter
+10:16:01 [INFO] value: "{", type: Delimiter
+10:16:01 [INFO] value: "b", type: Identifier
+10:16:01 [INFO] value: "=", type: Operator
+10:16:01 [INFO] value: "b", type: Identifier
+10:16:01 [INFO] value: "-", type: Operator
+10:16:01 [INFO] value: "1", type: Constant
+10:16:01 [INFO] value: ";", type: Delimiter
+10:16:01 [INFO] value: "}", type: Delimiter
+10:16:01 [INFO] value: "res", type: Identifier
+10:16:01 [INFO] value: "=", type: Operator
+10:16:01 [INFO] value: "0", type: Constant
+10:16:01 [INFO] value: ";", type: Delimiter
+10:16:01 [INFO] value: "}", type: Delimiter
+10:16:01 [INFO] value: "}", type: Delimiter
+10:16:01 [INFO] grammar:
+10:16:01 [INFO] s: 程序
+10:16:01 [INFO] v: ["程序'", "程序", "函数定义", "形式参数", "代码块", "变量类型", "算术表达式", "布尔表达式", "比较运算符", "算术运算符"]
+10:16:01 [INFO] t: ["id", "value", "(", ")", "{", "}", ",", ";", "=", "while", "if", "else", "return", "int", "float", "double", "bool", "char", "&&", "||", "!", "true", "false", "<", ">", "<=", ">=", "==", "!=", "-", "+", "*", "/"]
+10:16:01 [INFO] p:
+10:16:01 [INFO]   "程序'" -> "程序"
+10:16:01 [INFO]   "程序" -> "函数定义"
+10:16:01 [INFO]   "函数定义" -> "函数定义" "函数定义"
+10:16:01 [INFO]   "函数定义" -> "变量类型" "id" "(" ")" "{" "代码块" "}"
+10:16:01 [INFO]   "函数定义" -> "变量类型" "id" "(" "形式参数" ")" "{" "代码块" "}"
+10:16:01 [INFO]   "形式参数" -> "变量类型" "id"
+10:16:01 [INFO]   "形式参数" -> "变量类型" "id" "," "形式参数"
+10:16:01 [INFO]   "代码块" -> "代码块" "代码块"
+10:16:01 [INFO]   "代码块" -> "变量类型" "id" ";"
+10:16:01 [INFO]   "代码块" -> "变量类型" "id" "=" "算术表达式" ";"
+10:16:01 [INFO]   "代码块" -> "id" "=" "算术表达式" ";"
+10:16:01 [INFO]   "代码块" -> "while" "(" "布尔表达式" ")" "{" "代码块" "}"
+10:16:01 [INFO]   "代码块" -> "if" "(" "布尔表达式" ")" "{" "代码块" "}"
+10:16:01 [INFO]   "代码块" -> "if" "(" "布尔表达式" ")" "{" "代码块" "}" "else" "{" "代码块" "}"
+10:16:01 [INFO]   "代码块" -> "return" ";"
+10:16:01 [INFO]   "代码块" -> "return" "算术表达式" ";"
+10:16:01 [INFO]   "变量类型" -> "int"
+10:16:01 [INFO]   "变量类型" -> "float"
+10:16:01 [INFO]   "变量类型" -> "double"
+10:16:01 [INFO]   "变量类型" -> "bool"
+10:16:01 [INFO]   "变量类型" -> "char"
+10:16:01 [INFO]   "算术表达式" -> "算术表达式" "算术运算符" "算术表达式"
+10:16:01 [INFO]   "算术表达式" -> "-" "算术表达式"
+10:16:01 [INFO]   "算术表达式" -> "(" "算术表达式" ")"
+10:16:01 [INFO]   "算术表达式" -> "id"
+10:16:01 [INFO]   "算术表达式" -> "value"
+10:16:01 [INFO]   "布尔表达式" -> "算术表达式" "比较运算符" "算术表达式"
+10:16:01 [INFO]   "布尔表达式" -> "布尔表达式" "&&" "布尔表达式"
+10:16:01 [INFO]   "布尔表达式" -> "布尔表达式" "||" "布尔表达式"
+10:16:01 [INFO]   "布尔表达式" -> "!" "布尔表达式"
+10:16:01 [INFO]   "布尔表达式" -> "(" "布尔表达式" ")"
+10:16:01 [INFO]   "布尔表达式" -> "true"
+10:16:01 [INFO]   "布尔表达式" -> "false"
+10:16:01 [INFO]   "比较运算符" -> "<"
+10:16:01 [INFO]   "比较运算符" -> ">"
+10:16:01 [INFO]   "比较运算符" -> "<="
+10:16:01 [INFO]   "比较运算符" -> ">="
+10:16:01 [INFO]   "比较运算符" -> "=="
+10:16:01 [INFO]   "比较运算符" -> "!="
+10:16:01 [INFO]   "算术运算符" -> "+"
+10:16:01 [INFO]   "算术运算符" -> "-"
+10:16:01 [INFO]   "算术运算符" -> "*"
+10:16:01 [INFO]   "算术运算符" -> "/"
+10:16:01 [INFO] first:
+10:16:01 [INFO] FIRST(";") = [";"]
+10:16:01 [INFO] FIRST("+") = ["+"]
+10:16:01 [INFO] FIRST("程序") = []
+10:16:01 [INFO] FIRST("代码块") = ["bool", "char", "double", "float", "id", "if", "int", "return", "while"]
+10:16:01 [INFO] FIRST("形式参数") = ["bool", "char", "double", "float", "int"]
+10:16:01 [INFO] FIRST("&&") = ["&&"]
+10:16:01 [INFO] FIRST("value") = ["value"]
+10:16:01 [INFO] FIRST("float") = ["float"]
+10:16:01 [INFO] FIRST("程序'") = []
+10:16:01 [INFO] FIRST("函数定义") = ["bool", "char", "double", "float", "int"]
+10:16:01 [INFO] FIRST("return") = ["return"]
+10:16:01 [INFO] FIRST("!=") = ["!="]
+10:16:01 [INFO] FIRST("-") = ["-"]
+10:16:01 [INFO] FIRST(">=") = [">="]
+10:16:01 [INFO] FIRST("else") = ["else"]
+10:16:01 [INFO] FIRST("==") = ["=="]
+10:16:01 [INFO] FIRST("bool") = ["bool"]
+10:16:01 [INFO] FIRST("false") = ["false"]
+10:16:01 [INFO] FIRST("*") = ["*"]
+10:16:01 [INFO] FIRST("(") = ["("]
+10:16:01 [INFO] FIRST("id") = ["id"]
+10:16:01 [INFO] FIRST("{") = ["{"]
+10:16:01 [INFO] FIRST("<") = ["<"]
+10:16:01 [INFO] FIRST(">") = [">"]
+10:16:01 [INFO] FIRST("=") = ["="]
+10:16:01 [INFO] FIRST("if") = ["if"]
+10:16:01 [INFO] FIRST("/") = ["/"]
+10:16:01 [INFO] FIRST("变量类型") = ["bool", "char", "double", "float", "int"]
+10:16:01 [INFO] FIRST("算术表达式") = ["(", "-", "id", "value"]
+10:16:01 [INFO] FIRST("比较运算符") = ["!=", "<", "<=", "==", ">", ">="]
+10:16:01 [INFO] FIRST(")") = [")"]
+10:16:01 [INFO] FIRST("!") = ["!"]
+10:16:01 [INFO] FIRST("布尔表达式") = ["!", "(", "-", "false", "id", "true", "value"]
+10:16:01 [INFO] FIRST(",") = [","]
+10:16:01 [INFO] FIRST("算术运算符") = ["*", "+", "-", "/"]
+10:16:01 [INFO] FIRST("int") = ["int"]
+10:16:01 [INFO] FIRST("double") = ["double"]
+10:16:01 [INFO] FIRST("char") = ["char"]
+10:16:01 [INFO] FIRST("||") = ["||"]
+10:16:01 [INFO] FIRST("}") = ["}"]
+10:16:01 [INFO] FIRST("while") = ["while"]
+10:16:01 [INFO] FIRST("true") = ["true"]
+10:16:01 [INFO] FIRST("<=") = ["<="]
+10:16:01 [INFO] follow:
+10:16:01 [INFO] FOLLOW("算术运算符") = ["(", "-", "id", "value"]
+10:16:01 [INFO] FOLLOW("形式参数") = [")"]
+10:16:01 [INFO] FOLLOW("代码块") = ["bool", "char", "double", "float", "id", "if", "int", "return", "while", "}"]
+10:16:01 [INFO] FOLLOW("比较运算符") = ["(", "-", "id", "value"]
+10:16:01 [INFO] FOLLOW("程序'") = []
+10:16:01 [INFO] FOLLOW("算术表达式") = ["!=", ")", "*", "+", "-", "/", ";", "<", "<=", "==", ">", ">="]
+10:16:01 [INFO] FOLLOW("函数定义") = ["#", "bool", "char", "double", "float", "int"]
+10:16:01 [INFO] FOLLOW("变量类型") = ["id"]
+10:16:01 [INFO] FOLLOW("布尔表达式") = ["&&", ")", "||"]
+10:16:01 [INFO] FOLLOW("程序") = ["#"]
+10:16:02 [INFO] action:
+10:16:02 [INFO]       id    value (     )     {     }     ,     ;     =     while if    else  returnint   float doublebool  char  &&    ||    !     true  false <     >     <=    >=    ==    !=    -     +     *     /     #     
+10:16:02 [INFO] 0                                                                                   s4    s5    s6    s7    s8                                                                                                    
+10:16:02 [INFO] 1                                                                                                                                                                                                           acc   
+10:16:02 [INFO] 2                                                                                   s4    s5    s6    s7    s8                                                                                              r1    
+10:16:02 [INFO] 3     s10                                                                                                                                                                                                         
+10:16:02 [INFO] 4     r16                                                                                                                                                                                                         
+10:16:02 [INFO] 5     r17                                                                                                                                                                                                         
+10:16:02 [INFO] 6     r18                                                                                                                                                                                                         
+10:16:02 [INFO] 7     r19                                                                                                                                                                                                         
+10:16:02 [INFO] 8     r20                                                                                                                                                                                                         
+10:16:02 [INFO] 9                                                                                   s4    s5    s6    s7    s8                                                                                              r2    
+10:16:02 [INFO] 10                s11                                                                                                                                                                                             
+10:16:02 [INFO] 11                      s14                                                         s4    s5    s6    s7    s8                                                                                                    
+10:16:02 [INFO] 12                      s15                                                                                                                                                                                       
+10:16:02 [INFO] 13    s16                                                                                                                                                                                                         
+10:16:02 [INFO] 14                            s17                                                                                                                                                                                 
+10:16:02 [INFO] 15                            s18                                                                                                                                                                                 
+10:16:02 [INFO] 16                      r5                s19                                                                                                                                                                     
+10:16:02 [INFO] 17    s22                                                   s23   s24         s25   s4    s5    s6    s7    s8                                                                                                    
+10:16:02 [INFO] 18    s22                                                   s23   s24         s25   s4    s5    s6    s7    s8                                                                                                    
+10:16:02 [INFO] 19                                                                                  s4    s5    s6    s7    s8                                                                                                    
+10:16:02 [INFO] 20    s22                           s29                     s23   s24         s25   s4    s5    s6    s7    s8                                                                                                    
+10:16:02 [INFO] 21    s30                                                                                                                                                                                                         
+10:16:02 [INFO] 22                                                    s31                                                                                                                                                         
+10:16:02 [INFO] 23                s32                                                                                                                                                                                             
+10:16:02 [INFO] 24                s33                                                                                                                                                                                             
+10:16:02 [INFO] 25    s35   s36   s37                           s38                                                                                                                                 s39                           
+10:16:02 [INFO] 26    s22                           s40                     s23   s24         s25   s4    s5    s6    s7    s8                                                                                                    
+10:16:02 [INFO] 27                      r6                                                                                                                                                                                        
+10:16:02 [INFO] 28    s22                           r7                      s23   s24         s25   s4    s5    s6    s7    s8                                                                                                    
+10:16:02 [INFO] 29                                                                                  r3    r3    r3    r3    r3                                                                                              r3    
+10:16:02 [INFO] 30                                              s41   s42                                                                                                                                                         
+10:16:02 [INFO] 31    s35   s36   s37                                                                                                                                                               s39                           
+10:16:02 [INFO] 32    s35   s36   s46                                                                                                         s47   s48   s49                                       s39                           
+10:16:02 [INFO] 33    s35   s36   s46                                                                                                         s47   s48   s49                                       s39                           
+10:16:02 [INFO] 34                                              s52                                                                                                                                 s53   s54   s55   s56         
+10:16:02 [INFO] 35                      r24                     r24                                                                                             r24   r24   r24   r24   r24   r24   r24   r24   r24   r24         
+10:16:02 [INFO] 36                      r25                     r25                                                                                             r25   r25   r25   r25   r25   r25   r25   r25   r25   r25         
+10:16:02 [INFO] 37    s35   s36   s37                                                                                                                                                               s39                           
+10:16:02 [INFO] 38    r14                           r14                     r14   r14         r14   r14   r14   r14   r14   r14                                                                                                   
+10:16:02 [INFO] 39    s35   s36   s37                                                                                                                                                               s39                           
+10:16:02 [INFO] 40                                                                                  r4    r4    r4    r4    r4                                                                                              r4    
+10:16:02 [INFO] 41    r8                            r8                      r8    r8          r8    r8    r8    r8    r8    r8                                                                                                    
+10:16:02 [INFO] 42    s35   s36   s37                                                                                                                                                               s39                           
+10:16:02 [INFO] 43                                              s60                                                                                                                                 s53   s54   s55   s56         
+10:16:02 [INFO] 44                                                                                                                                              s62   s63   s64   s65   s66   s67   s53   s54   s55   s56         
+10:16:02 [INFO] 45                      s68                                                                                       s69   s70                                                                                       
+10:16:02 [INFO] 46    s35   s36   s46                                                                                                         s47   s48   s49                                       s39                           
+10:16:02 [INFO] 47    s35   s36   s46                                                                                                         s47   s48   s49                                       s39                           
+10:16:02 [INFO] 48                      r31                                                                                       r31   r31                                                                                       
+10:16:02 [INFO] 49                      r32                                                                                       r32   r32                                                                                       
+10:16:02 [INFO] 50                      s74                                                                                       s69   s70                                                                                       
+10:16:02 [INFO] 51    s35   s36   s37                                                                                                                                                               s39                           
+10:16:02 [INFO] 52    r15                           r15                     r15   r15         r15   r15   r15   r15   r15   r15                                                                                                   
+10:16:02 [INFO] 53    r40   r40   r40                                                                                                                                                               r40                           
+10:16:02 [INFO] 54    r39   r39   r39                                                                                                                                                               r39                           
+10:16:02 [INFO] 55    r41   r41   r41                                                                                                                                                               r41                           
+10:16:02 [INFO] 56    r42   r42   r42                                                                                                                                                               r42                           
+10:16:02 [INFO] 57                      s76                                                                                                                                                         s53   s54   s55   s56         
+10:16:02 [INFO] 58                      r22                     r22                                                                                             r22   r22   r22   r22   r22   r22   s53   s54   s55   s56         
+10:16:02 [INFO] 59                                              s77                                                                                                                                 s53   s54   s55   s56         
+10:16:02 [INFO] 60    r10                           r10                     r10   r10         r10   r10   r10   r10   r10   r10                                                                                                   
+10:16:02 [INFO] 61    s35   s36   s37                                                                                                                                                               s39                           
+10:16:02 [INFO] 62    r33   r33   r33                                                                                                                                                               r33                           
+10:16:02 [INFO] 63    r34   r34   r34                                                                                                                                                               r34                           
+10:16:02 [INFO] 64    r35   r35   r35                                                                                                                                                               r35                           
+10:16:02 [INFO] 65    r36   r36   r36                                                                                                                                                               r36                           
+10:16:02 [INFO] 66    r37   r37   r37                                                                                                                                                               r37                           
+10:16:02 [INFO] 67    r38   r38   r38                                                                                                                                                               r38                           
+10:16:02 [INFO] 68                            s79                                                                                                                                                                                 
+10:16:02 [INFO] 69    s35   s36   s46                                                                                                         s47   s48   s49                                       s39                           
+10:16:02 [INFO] 70    s35   s36   s46                                                                                                         s47   s48   s49                                       s39                           
+10:16:02 [INFO] 71                      s76                                                                                                                     s62   s63   s64   s65   s66   s67   s53   s54   s55   s56         
+10:16:02 [INFO] 72                      s82                                                                                       s69   s70                                                                                       
+10:16:02 [INFO] 73                      r29                                                                                       s69   s70                                                                                       
+10:16:02 [INFO] 74                            s83                                                                                                                                                                                 
+10:16:02 [INFO] 75                      r21                     r21                                                                                             r21   r21   r21   r21   r21   r21   s53   s54   s55   s56         
+10:16:02 [INFO] 76                      r23                     r23                                                                                             r23   r23   r23   r23   r23   r23   r23   r23   r23   r23         
+10:16:02 [INFO] 77    r9                            r9                      r9    r9          r9    r9    r9    r9    r9    r9                                                                                                    
+10:16:02 [INFO] 78                      r26                                                                                       r26   r26                                                         s53   s54   s55   s56         
+10:16:02 [INFO] 79    s22                                                   s23   s24         s25   s4    s5    s6    s7    s8                                                                                                    
+10:16:02 [INFO] 80                      r27                                                                                       s69   s70                                                                                       
+10:16:02 [INFO] 81                      r28                                                                                       s69   s70                                                                                       
+10:16:02 [INFO] 82                      r30                                                                                       r30   r30                                                                                       
+10:16:02 [INFO] 83    s22                                                   s23   s24         s25   s4    s5    s6    s7    s8                                                                                                    
+10:16:02 [INFO] 84    s22                           s86                     s23   s24         s25   s4    s5    s6    s7    s8                                                                                                    
+10:16:02 [INFO] 85    s22                           s87                     s23   s24         s25   s4    s5    s6    s7    s8                                                                                                    
+10:16:02 [INFO] 86    r11                           r11                     r11   r11         r11   r11   r11   r11   r11   r11                                                                                                   
+10:16:02 [INFO] 87    r12                           r12                     r12   r12   s88   r12   r12   r12   r12   r12   r12                                                                                                   
+10:16:02 [INFO] 88                            s89                                                                                                                                                                                 
+10:16:02 [INFO] 89    s22                                                   s23   s24         s25   s4    s5    s6    s7    s8                                                                                                    
+10:16:02 [INFO] 90    s22                           s91                     s23   s24         s25   s4    s5    s6    s7    s8                                                                                                    
+10:16:02 [INFO] 91    r13                           r13                     r13   r13         r13   r13   r13   r13   r13   r13                                                                                                   
+10:16:02 [INFO] goto:
+10:16:02 [INFO]           程序'       程序        函数定义      形式参数      代码块       变量类型      算术表达式     布尔表达式     比较运算符     算术运算符     
+10:16:02 [INFO] 0                   1         2                             3                                                 
+10:16:02 [INFO] 1                                                                                                             
+10:16:02 [INFO] 2                             9                             3                                                 
+10:16:02 [INFO] 3                                                                                                             
+10:16:02 [INFO] 4                                                                                                             
+10:16:02 [INFO] 5                                                                                                             
+10:16:02 [INFO] 6                                                                                                             
+10:16:02 [INFO] 7                                                                                                             
+10:16:02 [INFO] 8                                                                                                             
+10:16:02 [INFO] 9                             9                             3                                                 
+10:16:02 [INFO] 10                                                                                                            
+10:16:02 [INFO] 11                                      12                  13                                                
+10:16:02 [INFO] 12                                                                                                            
+10:16:02 [INFO] 13                                                                                                            
+10:16:02 [INFO] 14                                                                                                            
+10:16:02 [INFO] 15                                                                                                            
+10:16:02 [INFO] 16                                                                                                            
+10:16:02 [INFO] 17                                                20        21                                                
+10:16:02 [INFO] 18                                                26        21                                                
+10:16:02 [INFO] 19                                      27                  13                                                
+10:16:02 [INFO] 20                                                28        21                                                
+10:16:02 [INFO] 21                                                                                                            
+10:16:02 [INFO] 22                                                                                                            
+10:16:02 [INFO] 23                                                                                                            
+10:16:02 [INFO] 24                                                                                                            
+10:16:02 [INFO] 25                                                                    34                                      
+10:16:02 [INFO] 26                                                28        21                                                
+10:16:02 [INFO] 27                                                                                                            
+10:16:02 [INFO] 28                                                28        21                                                
+10:16:02 [INFO] 29                                                                                                            
+10:16:02 [INFO] 30                                                                                                            
+10:16:02 [INFO] 31                                                                    43                                      
+10:16:02 [INFO] 32                                                                    44        45                            
+10:16:02 [INFO] 33                                                                    44        50                            
+10:16:02 [INFO] 34                                                                                                  51        
+10:16:02 [INFO] 35                                                                                                            
+10:16:02 [INFO] 36                                                                                                            
+10:16:02 [INFO] 37                                                                    57                                      
+10:16:02 [INFO] 38                                                                                                            
+10:16:02 [INFO] 39                                                                    58                                      
+10:16:02 [INFO] 40                                                                                                            
+10:16:02 [INFO] 41                                                                                                            
+10:16:02 [INFO] 42                                                                    59                                      
+10:16:02 [INFO] 43                                                                                                  51        
+10:16:02 [INFO] 44                                                                                        61        51        
+10:16:02 [INFO] 45                                                                                                            
+10:16:02 [INFO] 46                                                                    71        72                            
+10:16:02 [INFO] 47                                                                    44        73                            
+10:16:02 [INFO] 48                                                                                                            
+10:16:02 [INFO] 49                                                                                                            
+10:16:02 [INFO] 50                                                                                                            
+10:16:02 [INFO] 51                                                                    75                                      
+10:16:02 [INFO] 52                                                                                                            
+10:16:02 [INFO] 53                                                                                                            
+10:16:02 [INFO] 54                                                                                                            
+10:16:02 [INFO] 55                                                                                                            
+10:16:02 [INFO] 56                                                                                                            
+10:16:02 [INFO] 57                                                                                                  51        
+10:16:02 [INFO] 58                                                                                                  51        
+10:16:02 [INFO] 59                                                                                                  51        
+10:16:02 [INFO] 60                                                                                                            
+10:16:02 [INFO] 61                                                                    78                                      
+10:16:02 [INFO] 62                                                                                                            
+10:16:02 [INFO] 63                                                                                                            
+10:16:02 [INFO] 64                                                                                                            
+10:16:02 [INFO] 65                                                                                                            
+10:16:02 [INFO] 66                                                                                                            
+10:16:02 [INFO] 67                                                                                                            
+10:16:02 [INFO] 68                                                                                                            
+10:16:02 [INFO] 69                                                                    44        80                            
+10:16:02 [INFO] 70                                                                    44        81                            
+10:16:02 [INFO] 71                                                                                        61        51        
+10:16:02 [INFO] 72                                                                                                            
+10:16:02 [INFO] 73                                                                                                            
+10:16:02 [INFO] 74                                                                                                            
+10:16:02 [INFO] 75                                                                                                  51        
+10:16:02 [INFO] 76                                                                                                            
+10:16:02 [INFO] 77                                                                                                            
+10:16:02 [INFO] 78                                                                                                  51        
+10:16:02 [INFO] 79                                                84        21                                                
+10:16:02 [INFO] 80                                                                                                            
+10:16:02 [INFO] 81                                                                                                            
+10:16:02 [INFO] 82                                                                                                            
+10:16:02 [INFO] 83                                                85        21                                                
+10:16:02 [INFO] 84                                                28        21                                                
+10:16:02 [INFO] 85                                                28        21                                                
+10:16:02 [INFO] 86                                                                                                            
+10:16:02 [INFO] 87                                                                                                            
+10:16:02 [INFO] 88                                                                                                            
+10:16:02 [INFO] 89                                                90        21                                                
+10:16:02 [INFO] 90                                                28        21                                                
+10:16:02 [INFO] 91                                                                                                            
+10:16:02 [INFO] init buffer: ["int", "id", "(", "int", "id", ",", "int", "id", ")", "{", "int", "id", ";", "id", "=", "id", "+", "id", ";", "int", "id", "=", "value", ";", "int", "id", "=", "id", ";", "if", "(", "id", "<", "value", ")", "{", "id", "=", "-", "id", ";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] -----step 1-----
+10:16:02 [INFO] state_stack: [0]
+10:16:02 [INFO] symbol_stack: ["#"]
+10:16:02 [INFO] buffer: ["int", "id", "(", "int", "id", ",", "int", "id", ")", "{", "int", "id", ";", "id", "=", "id", "+", "id", ";", "int", "id", "=", "value", ";", "int", "id", "=", "id", ";", "if", "(", "id", "<", "value", ")", "{", "id", "=", "-", "id", ";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 0, token: int, action: "s4"
+10:16:02 [INFO] 移进: 将 s4 状态压入状态栈，将 int 符号压入符号栈
+10:16:02 [INFO] -----step 2-----
+10:16:02 [INFO] state_stack: [0, 4]
+10:16:02 [INFO] symbol_stack: ["#", "int"]
+10:16:02 [INFO] buffer: ["id", "(", "int", "id", ",", "int", "id", ")", "{", "int", "id", ";", "id", "=", "id", "+", "id", ";", "int", "id", "=", "value", ";", "int", "id", "=", "id", ";", "if", "(", "id", "<", "value", ")", "{", "id", "=", "-", "id", ";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 4, token: id, action: "r16"
+10:16:02 [INFO] 规约: 按照第16个产生式 变量类型 -> int  进行规约
+10:16:02 [INFO] -----step 3-----
+10:16:02 [INFO] state_stack: [0, 3]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型"]
+10:16:02 [INFO] buffer: ["id", "(", "int", "id", ",", "int", "id", ")", "{", "int", "id", ";", "id", "=", "id", "+", "id", ";", "int", "id", "=", "value", ";", "int", "id", "=", "id", ";", "if", "(", "id", "<", "value", ")", "{", "id", "=", "-", "id", ";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 3, token: id, action: "s10"
+10:16:02 [INFO] 移进: 将 s10 状态压入状态栈，将 id 符号压入符号栈
+10:16:02 [INFO] -----step 4-----
+10:16:02 [INFO] state_stack: [0, 3, 10]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id"]
+10:16:02 [INFO] buffer: ["(", "int", "id", ",", "int", "id", ")", "{", "int", "id", ";", "id", "=", "id", "+", "id", ";", "int", "id", "=", "value", ";", "int", "id", "=", "id", ";", "if", "(", "id", "<", "value", ")", "{", "id", "=", "-", "id", ";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 10, token: (, action: "s11"
+10:16:02 [INFO] 移进: 将 s11 状态压入状态栈，将 ( 符号压入符号栈
+10:16:02 [INFO] -----step 5-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "("]
+10:16:02 [INFO] buffer: ["int", "id", ",", "int", "id", ")", "{", "int", "id", ";", "id", "=", "id", "+", "id", ";", "int", "id", "=", "value", ";", "int", "id", "=", "id", ";", "if", "(", "id", "<", "value", ")", "{", "id", "=", "-", "id", ";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 11, token: int, action: "s4"
+10:16:02 [INFO] 移进: 将 s4 状态压入状态栈，将 int 符号压入符号栈
+10:16:02 [INFO] -----step 6-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 4]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "int"]
+10:16:02 [INFO] buffer: ["id", ",", "int", "id", ")", "{", "int", "id", ";", "id", "=", "id", "+", "id", ";", "int", "id", "=", "value", ";", "int", "id", "=", "id", ";", "if", "(", "id", "<", "value", ")", "{", "id", "=", "-", "id", ";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 4, token: id, action: "r16"
+10:16:02 [INFO] 规约: 按照第16个产生式 变量类型 -> int  进行规约
+10:16:02 [INFO] -----step 7-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 13]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "变量类型"]
+10:16:02 [INFO] buffer: ["id", ",", "int", "id", ")", "{", "int", "id", ";", "id", "=", "id", "+", "id", ";", "int", "id", "=", "value", ";", "int", "id", "=", "id", ";", "if", "(", "id", "<", "value", ")", "{", "id", "=", "-", "id", ";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 13, token: id, action: "s16"
+10:16:02 [INFO] 移进: 将 s16 状态压入状态栈，将 id 符号压入符号栈
+10:16:02 [INFO] -----step 8-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 13, 16]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "变量类型", "id"]
+10:16:02 [INFO] buffer: [",", "int", "id", ")", "{", "int", "id", ";", "id", "=", "id", "+", "id", ";", "int", "id", "=", "value", ";", "int", "id", "=", "id", ";", "if", "(", "id", "<", "value", ")", "{", "id", "=", "-", "id", ";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 16, token: ,, action: "s19"
+10:16:02 [INFO] 移进: 将 s19 状态压入状态栈，将 , 符号压入符号栈
+10:16:02 [INFO] -----step 9-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 13, 16, 19]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "变量类型", "id", ","]
+10:16:02 [INFO] buffer: ["int", "id", ")", "{", "int", "id", ";", "id", "=", "id", "+", "id", ";", "int", "id", "=", "value", ";", "int", "id", "=", "id", ";", "if", "(", "id", "<", "value", ")", "{", "id", "=", "-", "id", ";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 19, token: int, action: "s4"
+10:16:02 [INFO] 移进: 将 s4 状态压入状态栈，将 int 符号压入符号栈
+10:16:02 [INFO] -----step 10-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 13, 16, 19, 4]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "变量类型", "id", ",", "int"]
+10:16:02 [INFO] buffer: ["id", ")", "{", "int", "id", ";", "id", "=", "id", "+", "id", ";", "int", "id", "=", "value", ";", "int", "id", "=", "id", ";", "if", "(", "id", "<", "value", ")", "{", "id", "=", "-", "id", ";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 4, token: id, action: "r16"
+10:16:02 [INFO] 规约: 按照第16个产生式 变量类型 -> int  进行规约
+10:16:02 [INFO] -----step 11-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 13, 16, 19, 13]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "变量类型", "id", ",", "变量类型"]
+10:16:02 [INFO] buffer: ["id", ")", "{", "int", "id", ";", "id", "=", "id", "+", "id", ";", "int", "id", "=", "value", ";", "int", "id", "=", "id", ";", "if", "(", "id", "<", "value", ")", "{", "id", "=", "-", "id", ";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 13, token: id, action: "s16"
+10:16:02 [INFO] 移进: 将 s16 状态压入状态栈，将 id 符号压入符号栈
+10:16:02 [INFO] -----step 12-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 13, 16, 19, 13, 16]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "变量类型", "id", ",", "变量类型", "id"]
+10:16:02 [INFO] buffer: [")", "{", "int", "id", ";", "id", "=", "id", "+", "id", ";", "int", "id", "=", "value", ";", "int", "id", "=", "id", ";", "if", "(", "id", "<", "value", ")", "{", "id", "=", "-", "id", ";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 16, token: ), action: "r5"
+10:16:02 [INFO] 规约: 按照第5个产生式 形式参数 -> 变量类型 id  进行规约
+10:16:02 [INFO] -----step 13-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 13, 16, 19, 27]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "变量类型", "id", ",", "形式参数"]
+10:16:02 [INFO] buffer: [")", "{", "int", "id", ";", "id", "=", "id", "+", "id", ";", "int", "id", "=", "value", ";", "int", "id", "=", "id", ";", "if", "(", "id", "<", "value", ")", "{", "id", "=", "-", "id", ";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 27, token: ), action: "r6"
+10:16:02 [INFO] 规约: 按照第6个产生式 形式参数 -> 变量类型 id , 形式参数  进行规约
+10:16:02 [INFO] -----step 14-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数"]
+10:16:02 [INFO] buffer: [")", "{", "int", "id", ";", "id", "=", "id", "+", "id", ";", "int", "id", "=", "value", ";", "int", "id", "=", "id", ";", "if", "(", "id", "<", "value", ")", "{", "id", "=", "-", "id", ";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 12, token: ), action: "s15"
+10:16:02 [INFO] 移进: 将 s15 状态压入状态栈，将 ) 符号压入符号栈
+10:16:02 [INFO] -----step 15-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")"]
+10:16:02 [INFO] buffer: ["{", "int", "id", ";", "id", "=", "id", "+", "id", ";", "int", "id", "=", "value", ";", "int", "id", "=", "id", ";", "if", "(", "id", "<", "value", ")", "{", "id", "=", "-", "id", ";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 15, token: {, action: "s18"
+10:16:02 [INFO] 移进: 将 s18 状态压入状态栈，将 { 符号压入符号栈
+10:16:02 [INFO] -----step 16-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{"]
+10:16:02 [INFO] buffer: ["int", "id", ";", "id", "=", "id", "+", "id", ";", "int", "id", "=", "value", ";", "int", "id", "=", "id", ";", "if", "(", "id", "<", "value", ")", "{", "id", "=", "-", "id", ";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 18, token: int, action: "s4"
+10:16:02 [INFO] 移进: 将 s4 状态压入状态栈，将 int 符号压入符号栈
+10:16:02 [INFO] -----step 17-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 4]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "int"]
+10:16:02 [INFO] buffer: ["id", ";", "id", "=", "id", "+", "id", ";", "int", "id", "=", "value", ";", "int", "id", "=", "id", ";", "if", "(", "id", "<", "value", ")", "{", "id", "=", "-", "id", ";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 4, token: id, action: "r16"
+10:16:02 [INFO] 规约: 按照第16个产生式 变量类型 -> int  进行规约
+10:16:02 [INFO] -----step 18-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 21]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "变量类型"]
+10:16:02 [INFO] buffer: ["id", ";", "id", "=", "id", "+", "id", ";", "int", "id", "=", "value", ";", "int", "id", "=", "id", ";", "if", "(", "id", "<", "value", ")", "{", "id", "=", "-", "id", ";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 21, token: id, action: "s30"
+10:16:02 [INFO] 移进: 将 s30 状态压入状态栈，将 id 符号压入符号栈
+10:16:02 [INFO] -----step 19-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 21, 30]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "变量类型", "id"]
+10:16:02 [INFO] buffer: [";", "id", "=", "id", "+", "id", ";", "int", "id", "=", "value", ";", "int", "id", "=", "id", ";", "if", "(", "id", "<", "value", ")", "{", "id", "=", "-", "id", ";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 30, token: ;, action: "s41"
+10:16:02 [INFO] 移进: 将 s41 状态压入状态栈，将 ; 符号压入符号栈
+10:16:02 [INFO] -----step 20-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 21, 30, 41]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "变量类型", "id", ";"]
+10:16:02 [INFO] buffer: ["id", "=", "id", "+", "id", ";", "int", "id", "=", "value", ";", "int", "id", "=", "id", ";", "if", "(", "id", "<", "value", ")", "{", "id", "=", "-", "id", ";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 41, token: id, action: "r8"
+10:16:02 [INFO] 规约: 按照第8个产生式 代码块 -> 变量类型 id ;  进行规约
+10:16:02 [INFO] -----step 21-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块"]
+10:16:02 [INFO] buffer: ["id", "=", "id", "+", "id", ";", "int", "id", "=", "value", ";", "int", "id", "=", "id", ";", "if", "(", "id", "<", "value", ")", "{", "id", "=", "-", "id", ";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 26, token: id, action: "s22"
+10:16:02 [INFO] 移进: 将 s22 状态压入状态栈，将 id 符号压入符号栈
+10:16:02 [INFO] -----step 22-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 22]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "id"]
+10:16:02 [INFO] buffer: ["=", "id", "+", "id", ";", "int", "id", "=", "value", ";", "int", "id", "=", "id", ";", "if", "(", "id", "<", "value", ")", "{", "id", "=", "-", "id", ";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 22, token: =, action: "s31"
+10:16:02 [INFO] 移进: 将 s31 状态压入状态栈，将 = 符号压入符号栈
+10:16:02 [INFO] -----step 23-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 22, 31]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "id", "="]
+10:16:02 [INFO] buffer: ["id", "+", "id", ";", "int", "id", "=", "value", ";", "int", "id", "=", "id", ";", "if", "(", "id", "<", "value", ")", "{", "id", "=", "-", "id", ";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 31, token: id, action: "s35"
+10:16:02 [INFO] 移进: 将 s35 状态压入状态栈，将 id 符号压入符号栈
+10:16:02 [INFO] -----step 24-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 22, 31, 35]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "id", "=", "id"]
+10:16:02 [INFO] buffer: ["+", "id", ";", "int", "id", "=", "value", ";", "int", "id", "=", "id", ";", "if", "(", "id", "<", "value", ")", "{", "id", "=", "-", "id", ";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 35, token: +, action: "r24"
+10:16:02 [INFO] 规约: 按照第24个产生式 算术表达式 -> id  进行规约
+10:16:02 [INFO] -----step 25-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 22, 31, 43]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "id", "=", "算术表达式"]
+10:16:02 [INFO] buffer: ["+", "id", ";", "int", "id", "=", "value", ";", "int", "id", "=", "id", ";", "if", "(", "id", "<", "value", ")", "{", "id", "=", "-", "id", ";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 43, token: +, action: "s54"
+10:16:02 [INFO] 移进: 将 s54 状态压入状态栈，将 + 符号压入符号栈
+10:16:02 [INFO] -----step 26-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 22, 31, 43, 54]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "id", "=", "算术表达式", "+"]
+10:16:02 [INFO] buffer: ["id", ";", "int", "id", "=", "value", ";", "int", "id", "=", "id", ";", "if", "(", "id", "<", "value", ")", "{", "id", "=", "-", "id", ";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 54, token: id, action: "r39"
+10:16:02 [INFO] 规约: 按照第39个产生式 算术运算符 -> +  进行规约
+10:16:02 [INFO] -----step 27-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 22, 31, 43, 51]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "id", "=", "算术表达式", "算术运算符"]
+10:16:02 [INFO] buffer: ["id", ";", "int", "id", "=", "value", ";", "int", "id", "=", "id", ";", "if", "(", "id", "<", "value", ")", "{", "id", "=", "-", "id", ";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 51, token: id, action: "s35"
+10:16:02 [INFO] 移进: 将 s35 状态压入状态栈，将 id 符号压入符号栈
+10:16:02 [INFO] -----step 28-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 22, 31, 43, 51, 35]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "id", "=", "算术表达式", "算术运算符", "id"]
+10:16:02 [INFO] buffer: [";", "int", "id", "=", "value", ";", "int", "id", "=", "id", ";", "if", "(", "id", "<", "value", ")", "{", "id", "=", "-", "id", ";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 35, token: ;, action: "r24"
+10:16:02 [INFO] 规约: 按照第24个产生式 算术表达式 -> id  进行规约
+10:16:02 [INFO] -----step 29-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 22, 31, 43, 51, 75]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "id", "=", "算术表达式", "算术运算符", "算术表达式"]
+10:16:02 [INFO] buffer: [";", "int", "id", "=", "value", ";", "int", "id", "=", "id", ";", "if", "(", "id", "<", "value", ")", "{", "id", "=", "-", "id", ";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 75, token: ;, action: "r21"
+10:16:02 [INFO] 规约: 按照第21个产生式 算术表达式 -> 算术表达式 算术运算符 算术表达式  进行规约
+10:16:02 [INFO] -----step 30-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 22, 31, 43]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "id", "=", "算术表达式"]
+10:16:02 [INFO] buffer: [";", "int", "id", "=", "value", ";", "int", "id", "=", "id", ";", "if", "(", "id", "<", "value", ")", "{", "id", "=", "-", "id", ";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 43, token: ;, action: "s60"
+10:16:02 [INFO] 移进: 将 s60 状态压入状态栈，将 ; 符号压入符号栈
+10:16:02 [INFO] -----step 31-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 22, 31, 43, 60]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "id", "=", "算术表达式", ";"]
+10:16:02 [INFO] buffer: ["int", "id", "=", "value", ";", "int", "id", "=", "id", ";", "if", "(", "id", "<", "value", ")", "{", "id", "=", "-", "id", ";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 60, token: int, action: "r10"
+10:16:02 [INFO] 规约: 按照第10个产生式 代码块 -> id = 算术表达式 ;  进行规约
+10:16:02 [INFO] -----step 32-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块"]
+10:16:02 [INFO] buffer: ["int", "id", "=", "value", ";", "int", "id", "=", "id", ";", "if", "(", "id", "<", "value", ")", "{", "id", "=", "-", "id", ";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 28, token: int, action: "s4"
+10:16:02 [INFO] 移进: 将 s4 状态压入状态栈，将 int 符号压入符号栈
+10:16:02 [INFO] -----step 33-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 4]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "int"]
+10:16:02 [INFO] buffer: ["id", "=", "value", ";", "int", "id", "=", "id", ";", "if", "(", "id", "<", "value", ")", "{", "id", "=", "-", "id", ";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 4, token: id, action: "r16"
+10:16:02 [INFO] 规约: 按照第16个产生式 变量类型 -> int  进行规约
+10:16:02 [INFO] -----step 34-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 21]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "变量类型"]
+10:16:02 [INFO] buffer: ["id", "=", "value", ";", "int", "id", "=", "id", ";", "if", "(", "id", "<", "value", ")", "{", "id", "=", "-", "id", ";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 21, token: id, action: "s30"
+10:16:02 [INFO] 移进: 将 s30 状态压入状态栈，将 id 符号压入符号栈
+10:16:02 [INFO] -----step 35-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 21, 30]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "变量类型", "id"]
+10:16:02 [INFO] buffer: ["=", "value", ";", "int", "id", "=", "id", ";", "if", "(", "id", "<", "value", ")", "{", "id", "=", "-", "id", ";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 30, token: =, action: "s42"
+10:16:02 [INFO] 移进: 将 s42 状态压入状态栈，将 = 符号压入符号栈
+10:16:02 [INFO] -----step 36-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 21, 30, 42]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "变量类型", "id", "="]
+10:16:02 [INFO] buffer: ["value", ";", "int", "id", "=", "id", ";", "if", "(", "id", "<", "value", ")", "{", "id", "=", "-", "id", ";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 42, token: value, action: "s36"
+10:16:02 [INFO] 移进: 将 s36 状态压入状态栈，将 value 符号压入符号栈
+10:16:02 [INFO] -----step 37-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 21, 30, 42, 36]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "变量类型", "id", "=", "value"]
+10:16:02 [INFO] buffer: [";", "int", "id", "=", "id", ";", "if", "(", "id", "<", "value", ")", "{", "id", "=", "-", "id", ";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 36, token: ;, action: "r25"
+10:16:02 [INFO] 规约: 按照第25个产生式 算术表达式 -> value  进行规约
+10:16:02 [INFO] -----step 38-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 21, 30, 42, 59]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "变量类型", "id", "=", "算术表达式"]
+10:16:02 [INFO] buffer: [";", "int", "id", "=", "id", ";", "if", "(", "id", "<", "value", ")", "{", "id", "=", "-", "id", ";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 59, token: ;, action: "s77"
+10:16:02 [INFO] 移进: 将 s77 状态压入状态栈，将 ; 符号压入符号栈
+10:16:02 [INFO] -----step 39-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 21, 30, 42, 59, 77]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "变量类型", "id", "=", "算术表达式", ";"]
+10:16:02 [INFO] buffer: ["int", "id", "=", "id", ";", "if", "(", "id", "<", "value", ")", "{", "id", "=", "-", "id", ";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 77, token: int, action: "r9"
+10:16:02 [INFO] 规约: 按照第9个产生式 代码块 -> 变量类型 id = 算术表达式 ;  进行规约
+10:16:02 [INFO] -----step 40-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块"]
+10:16:02 [INFO] buffer: ["int", "id", "=", "id", ";", "if", "(", "id", "<", "value", ")", "{", "id", "=", "-", "id", ";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 28, token: int, action: "s4"
+10:16:02 [INFO] 移进: 将 s4 状态压入状态栈，将 int 符号压入符号栈
+10:16:02 [INFO] -----step 41-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28, 4]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块", "int"]
+10:16:02 [INFO] buffer: ["id", "=", "id", ";", "if", "(", "id", "<", "value", ")", "{", "id", "=", "-", "id", ";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 4, token: id, action: "r16"
+10:16:02 [INFO] 规约: 按照第16个产生式 变量类型 -> int  进行规约
+10:16:02 [INFO] -----step 42-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28, 21]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块", "变量类型"]
+10:16:02 [INFO] buffer: ["id", "=", "id", ";", "if", "(", "id", "<", "value", ")", "{", "id", "=", "-", "id", ";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 21, token: id, action: "s30"
+10:16:02 [INFO] 移进: 将 s30 状态压入状态栈，将 id 符号压入符号栈
+10:16:02 [INFO] -----step 43-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28, 21, 30]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块", "变量类型", "id"]
+10:16:02 [INFO] buffer: ["=", "id", ";", "if", "(", "id", "<", "value", ")", "{", "id", "=", "-", "id", ";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 30, token: =, action: "s42"
+10:16:02 [INFO] 移进: 将 s42 状态压入状态栈，将 = 符号压入符号栈
+10:16:02 [INFO] -----step 44-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28, 21, 30, 42]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块", "变量类型", "id", "="]
+10:16:02 [INFO] buffer: ["id", ";", "if", "(", "id", "<", "value", ")", "{", "id", "=", "-", "id", ";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 42, token: id, action: "s35"
+10:16:02 [INFO] 移进: 将 s35 状态压入状态栈，将 id 符号压入符号栈
+10:16:02 [INFO] -----step 45-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28, 21, 30, 42, 35]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块", "变量类型", "id", "=", "id"]
+10:16:02 [INFO] buffer: [";", "if", "(", "id", "<", "value", ")", "{", "id", "=", "-", "id", ";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 35, token: ;, action: "r24"
+10:16:02 [INFO] 规约: 按照第24个产生式 算术表达式 -> id  进行规约
+10:16:02 [INFO] -----step 46-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28, 21, 30, 42, 59]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块", "变量类型", "id", "=", "算术表达式"]
+10:16:02 [INFO] buffer: [";", "if", "(", "id", "<", "value", ")", "{", "id", "=", "-", "id", ";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 59, token: ;, action: "s77"
+10:16:02 [INFO] 移进: 将 s77 状态压入状态栈，将 ; 符号压入符号栈
+10:16:02 [INFO] -----step 47-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28, 21, 30, 42, 59, 77]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块", "变量类型", "id", "=", "算术表达式", ";"]
+10:16:02 [INFO] buffer: ["if", "(", "id", "<", "value", ")", "{", "id", "=", "-", "id", ";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 77, token: if, action: "r9"
+10:16:02 [INFO] 规约: 按照第9个产生式 代码块 -> 变量类型 id = 算术表达式 ;  进行规约
+10:16:02 [INFO] -----step 48-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28, 28]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块", "代码块"]
+10:16:02 [INFO] buffer: ["if", "(", "id", "<", "value", ")", "{", "id", "=", "-", "id", ";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 28, token: if, action: "s24"
+10:16:02 [INFO] 移进: 将 s24 状态压入状态栈，将 if 符号压入符号栈
+10:16:02 [INFO] -----step 49-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28, 28, 24]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块", "代码块", "if"]
+10:16:02 [INFO] buffer: ["(", "id", "<", "value", ")", "{", "id", "=", "-", "id", ";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 24, token: (, action: "s33"
+10:16:02 [INFO] 移进: 将 s33 状态压入状态栈，将 ( 符号压入符号栈
+10:16:02 [INFO] -----step 50-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28, 28, 24, 33]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块", "代码块", "if", "("]
+10:16:02 [INFO] buffer: ["id", "<", "value", ")", "{", "id", "=", "-", "id", ";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 33, token: id, action: "s35"
+10:16:02 [INFO] 移进: 将 s35 状态压入状态栈，将 id 符号压入符号栈
+10:16:02 [INFO] -----step 51-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28, 28, 24, 33, 35]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块", "代码块", "if", "(", "id"]
+10:16:02 [INFO] buffer: ["<", "value", ")", "{", "id", "=", "-", "id", ";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 35, token: <, action: "r24"
+10:16:02 [INFO] 规约: 按照第24个产生式 算术表达式 -> id  进行规约
+10:16:02 [INFO] -----step 52-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28, 28, 24, 33, 44]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块", "代码块", "if", "(", "算术表达式"]
+10:16:02 [INFO] buffer: ["<", "value", ")", "{", "id", "=", "-", "id", ";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 44, token: <, action: "s62"
+10:16:02 [INFO] 移进: 将 s62 状态压入状态栈，将 < 符号压入符号栈
+10:16:02 [INFO] -----step 53-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28, 28, 24, 33, 44, 62]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块", "代码块", "if", "(", "算术表达式", "<"]
+10:16:02 [INFO] buffer: ["value", ")", "{", "id", "=", "-", "id", ";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 62, token: value, action: "r33"
+10:16:02 [INFO] 规约: 按照第33个产生式 比较运算符 -> <  进行规约
+10:16:02 [INFO] -----step 54-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28, 28, 24, 33, 44, 61]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块", "代码块", "if", "(", "算术表达式", "比较运算符"]
+10:16:02 [INFO] buffer: ["value", ")", "{", "id", "=", "-", "id", ";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 61, token: value, action: "s36"
+10:16:02 [INFO] 移进: 将 s36 状态压入状态栈，将 value 符号压入符号栈
+10:16:02 [INFO] -----step 55-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28, 28, 24, 33, 44, 61, 36]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块", "代码块", "if", "(", "算术表达式", "比较运算符", "value"]
+10:16:02 [INFO] buffer: [")", "{", "id", "=", "-", "id", ";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 36, token: ), action: "r25"
+10:16:02 [INFO] 规约: 按照第25个产生式 算术表达式 -> value  进行规约
+10:16:02 [INFO] -----step 56-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28, 28, 24, 33, 44, 61, 78]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块", "代码块", "if", "(", "算术表达式", "比较运算符", "算术表达式"]
+10:16:02 [INFO] buffer: [")", "{", "id", "=", "-", "id", ";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 78, token: ), action: "r26"
+10:16:02 [INFO] 规约: 按照第26个产生式 布尔表达式 -> 算术表达式 比较运算符 算术表达式  进行规约
+10:16:02 [INFO] -----step 57-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28, 28, 24, 33, 50]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块", "代码块", "if", "(", "布尔表达式"]
+10:16:02 [INFO] buffer: [")", "{", "id", "=", "-", "id", ";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 50, token: ), action: "s74"
+10:16:02 [INFO] 移进: 将 s74 状态压入状态栈，将 ) 符号压入符号栈
+10:16:02 [INFO] -----step 58-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28, 28, 24, 33, 50, 74]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块", "代码块", "if", "(", "布尔表达式", ")"]
+10:16:02 [INFO] buffer: ["{", "id", "=", "-", "id", ";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 74, token: {, action: "s83"
+10:16:02 [INFO] 移进: 将 s83 状态压入状态栈，将 { 符号压入符号栈
+10:16:02 [INFO] -----step 59-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28, 28, 24, 33, 50, 74, 83]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块", "代码块", "if", "(", "布尔表达式", ")", "{"]
+10:16:02 [INFO] buffer: ["id", "=", "-", "id", ";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 83, token: id, action: "s22"
+10:16:02 [INFO] 移进: 将 s22 状态压入状态栈，将 id 符号压入符号栈
+10:16:02 [INFO] -----step 60-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28, 28, 24, 33, 50, 74, 83, 22]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块", "代码块", "if", "(", "布尔表达式", ")", "{", "id"]
+10:16:02 [INFO] buffer: ["=", "-", "id", ";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 22, token: =, action: "s31"
+10:16:02 [INFO] 移进: 将 s31 状态压入状态栈，将 = 符号压入符号栈
+10:16:02 [INFO] -----step 61-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28, 28, 24, 33, 50, 74, 83, 22, 31]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块", "代码块", "if", "(", "布尔表达式", ")", "{", "id", "="]
+10:16:02 [INFO] buffer: ["-", "id", ";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 31, token: -, action: "s39"
+10:16:02 [INFO] 移进: 将 s39 状态压入状态栈，将 - 符号压入符号栈
+10:16:02 [INFO] -----step 62-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28, 28, 24, 33, 50, 74, 83, 22, 31, 39]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块", "代码块", "if", "(", "布尔表达式", ")", "{", "id", "=", "-"]
+10:16:02 [INFO] buffer: ["id", ";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 39, token: id, action: "s35"
+10:16:02 [INFO] 移进: 将 s35 状态压入状态栈，将 id 符号压入符号栈
+10:16:02 [INFO] -----step 63-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28, 28, 24, 33, 50, 74, 83, 22, 31, 39, 35]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块", "代码块", "if", "(", "布尔表达式", ")", "{", "id", "=", "-", "id"]
+10:16:02 [INFO] buffer: [";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 35, token: ;, action: "r24"
+10:16:02 [INFO] 规约: 按照第24个产生式 算术表达式 -> id  进行规约
+10:16:02 [INFO] -----step 64-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28, 28, 24, 33, 50, 74, 83, 22, 31, 39, 58]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块", "代码块", "if", "(", "布尔表达式", ")", "{", "id", "=", "-", "算术表达式"]
+10:16:02 [INFO] buffer: [";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 58, token: ;, action: "r22"
+10:16:02 [INFO] 规约: 按照第22个产生式 算术表达式 -> - 算术表达式  进行规约
+10:16:02 [INFO] -----step 65-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28, 28, 24, 33, 50, 74, 83, 22, 31, 43]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块", "代码块", "if", "(", "布尔表达式", ")", "{", "id", "=", "算术表达式"]
+10:16:02 [INFO] buffer: [";", "}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 43, token: ;, action: "s60"
+10:16:02 [INFO] 移进: 将 s60 状态压入状态栈，将 ; 符号压入符号栈
+10:16:02 [INFO] -----step 66-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28, 28, 24, 33, 50, 74, 83, 22, 31, 43, 60]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块", "代码块", "if", "(", "布尔表达式", ")", "{", "id", "=", "算术表达式", ";"]
+10:16:02 [INFO] buffer: ["}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 60, token: }, action: "r10"
+10:16:02 [INFO] 规约: 按照第10个产生式 代码块 -> id = 算术表达式 ;  进行规约
+10:16:02 [INFO] -----step 67-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28, 28, 24, 33, 50, 74, 83, 85]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块", "代码块", "if", "(", "布尔表达式", ")", "{", "代码块"]
+10:16:02 [INFO] buffer: ["}", "else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 85, token: }, action: "s87"
+10:16:02 [INFO] 移进: 将 s87 状态压入状态栈，将 } 符号压入符号栈
+10:16:02 [INFO] -----step 68-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28, 28, 24, 33, 50, 74, 83, 85, 87]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块", "代码块", "if", "(", "布尔表达式", ")", "{", "代码块", "}"]
+10:16:02 [INFO] buffer: ["else", "{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 87, token: else, action: "s88"
+10:16:02 [INFO] 移进: 将 s88 状态压入状态栈，将 else 符号压入符号栈
+10:16:02 [INFO] -----step 69-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28, 28, 24, 33, 50, 74, 83, 85, 87, 88]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块", "代码块", "if", "(", "布尔表达式", ")", "{", "代码块", "}", "else"]
+10:16:02 [INFO] buffer: ["{", "while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 88, token: {, action: "s89"
+10:16:02 [INFO] 移进: 将 s89 状态压入状态栈，将 { 符号压入符号栈
+10:16:02 [INFO] -----step 70-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28, 28, 24, 33, 50, 74, 83, 85, 87, 88, 89]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块", "代码块", "if", "(", "布尔表达式", ")", "{", "代码块", "}", "else", "{"]
+10:16:02 [INFO] buffer: ["while", "(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 89, token: while, action: "s23"
+10:16:02 [INFO] 移进: 将 s23 状态压入状态栈，将 while 符号压入符号栈
+10:16:02 [INFO] -----step 71-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28, 28, 24, 33, 50, 74, 83, 85, 87, 88, 89, 23]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块", "代码块", "if", "(", "布尔表达式", ")", "{", "代码块", "}", "else", "{", "while"]
+10:16:02 [INFO] buffer: ["(", "id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 23, token: (, action: "s32"
+10:16:02 [INFO] 移进: 将 s32 状态压入状态栈，将 ( 符号压入符号栈
+10:16:02 [INFO] -----step 72-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28, 28, 24, 33, 50, 74, 83, 85, 87, 88, 89, 23, 32]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块", "代码块", "if", "(", "布尔表达式", ")", "{", "代码块", "}", "else", "{", "while", "("]
+10:16:02 [INFO] buffer: ["id", ">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 32, token: id, action: "s35"
+10:16:02 [INFO] 移进: 将 s35 状态压入状态栈，将 id 符号压入符号栈
+10:16:02 [INFO] -----step 73-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28, 28, 24, 33, 50, 74, 83, 85, 87, 88, 89, 23, 32, 35]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块", "代码块", "if", "(", "布尔表达式", ")", "{", "代码块", "}", "else", "{", "while", "(", "id"]
+10:16:02 [INFO] buffer: [">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 35, token: >, action: "r24"
+10:16:02 [INFO] 规约: 按照第24个产生式 算术表达式 -> id  进行规约
+10:16:02 [INFO] -----step 74-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28, 28, 24, 33, 50, 74, 83, 85, 87, 88, 89, 23, 32, 44]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块", "代码块", "if", "(", "布尔表达式", ")", "{", "代码块", "}", "else", "{", "while", "(", "算术表达式"]
+10:16:02 [INFO] buffer: [">", "value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 44, token: >, action: "s63"
+10:16:02 [INFO] 移进: 将 s63 状态压入状态栈，将 > 符号压入符号栈
+10:16:02 [INFO] -----step 75-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28, 28, 24, 33, 50, 74, 83, 85, 87, 88, 89, 23, 32, 44, 63]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块", "代码块", "if", "(", "布尔表达式", ")", "{", "代码块", "}", "else", "{", "while", "(", "算术表达式", ">"]
+10:16:02 [INFO] buffer: ["value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 63, token: value, action: "r34"
+10:16:02 [INFO] 规约: 按照第34个产生式 比较运算符 -> >  进行规约
+10:16:02 [INFO] -----step 76-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28, 28, 24, 33, 50, 74, 83, 85, 87, 88, 89, 23, 32, 44, 61]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块", "代码块", "if", "(", "布尔表达式", ")", "{", "代码块", "}", "else", "{", "while", "(", "算术表达式", "比较运算符"]
+10:16:02 [INFO] buffer: ["value", ")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 61, token: value, action: "s36"
+10:16:02 [INFO] 移进: 将 s36 状态压入状态栈，将 value 符号压入符号栈
+10:16:02 [INFO] -----step 77-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28, 28, 24, 33, 50, 74, 83, 85, 87, 88, 89, 23, 32, 44, 61, 36]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块", "代码块", "if", "(", "布尔表达式", ")", "{", "代码块", "}", "else", "{", "while", "(", "算术表达式", "比较运算符", "value"]
+10:16:02 [INFO] buffer: [")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 36, token: ), action: "r25"
+10:16:02 [INFO] 规约: 按照第25个产生式 算术表达式 -> value  进行规约
+10:16:02 [INFO] -----step 78-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28, 28, 24, 33, 50, 74, 83, 85, 87, 88, 89, 23, 32, 44, 61, 78]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块", "代码块", "if", "(", "布尔表达式", ")", "{", "代码块", "}", "else", "{", "while", "(", "算术表达式", "比较运算符", "算术表达式"]
+10:16:02 [INFO] buffer: [")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 78, token: ), action: "r26"
+10:16:02 [INFO] 规约: 按照第26个产生式 布尔表达式 -> 算术表达式 比较运算符 算术表达式  进行规约
+10:16:02 [INFO] -----step 79-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28, 28, 24, 33, 50, 74, 83, 85, 87, 88, 89, 23, 32, 45]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块", "代码块", "if", "(", "布尔表达式", ")", "{", "代码块", "}", "else", "{", "while", "(", "布尔表达式"]
+10:16:02 [INFO] buffer: [")", "{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 45, token: ), action: "s68"
+10:16:02 [INFO] 移进: 将 s68 状态压入状态栈，将 ) 符号压入符号栈
+10:16:02 [INFO] -----step 80-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28, 28, 24, 33, 50, 74, 83, 85, 87, 88, 89, 23, 32, 45, 68]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块", "代码块", "if", "(", "布尔表达式", ")", "{", "代码块", "}", "else", "{", "while", "(", "布尔表达式", ")"]
+10:16:02 [INFO] buffer: ["{", "id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 68, token: {, action: "s79"
+10:16:02 [INFO] 移进: 将 s79 状态压入状态栈，将 { 符号压入符号栈
+10:16:02 [INFO] -----step 81-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28, 28, 24, 33, 50, 74, 83, 85, 87, 88, 89, 23, 32, 45, 68, 79]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块", "代码块", "if", "(", "布尔表达式", ")", "{", "代码块", "}", "else", "{", "while", "(", "布尔表达式", ")", "{"]
+10:16:02 [INFO] buffer: ["id", "=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 79, token: id, action: "s22"
+10:16:02 [INFO] 移进: 将 s22 状态压入状态栈，将 id 符号压入符号栈
+10:16:02 [INFO] -----step 82-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28, 28, 24, 33, 50, 74, 83, 85, 87, 88, 89, 23, 32, 45, 68, 79, 22]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块", "代码块", "if", "(", "布尔表达式", ")", "{", "代码块", "}", "else", "{", "while", "(", "布尔表达式", ")", "{", "id"]
+10:16:02 [INFO] buffer: ["=", "id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 22, token: =, action: "s31"
+10:16:02 [INFO] 移进: 将 s31 状态压入状态栈，将 = 符号压入符号栈
+10:16:02 [INFO] -----step 83-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28, 28, 24, 33, 50, 74, 83, 85, 87, 88, 89, 23, 32, 45, 68, 79, 22, 31]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块", "代码块", "if", "(", "布尔表达式", ")", "{", "代码块", "}", "else", "{", "while", "(", "布尔表达式", ")", "{", "id", "="]
+10:16:02 [INFO] buffer: ["id", "-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 31, token: id, action: "s35"
+10:16:02 [INFO] 移进: 将 s35 状态压入状态栈，将 id 符号压入符号栈
+10:16:02 [INFO] -----step 84-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28, 28, 24, 33, 50, 74, 83, 85, 87, 88, 89, 23, 32, 45, 68, 79, 22, 31, 35]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块", "代码块", "if", "(", "布尔表达式", ")", "{", "代码块", "}", "else", "{", "while", "(", "布尔表达式", ")", "{", "id", "=", "id"]
+10:16:02 [INFO] buffer: ["-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 35, token: -, action: "r24"
+10:16:02 [INFO] 规约: 按照第24个产生式 算术表达式 -> id  进行规约
+10:16:02 [INFO] -----step 85-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28, 28, 24, 33, 50, 74, 83, 85, 87, 88, 89, 23, 32, 45, 68, 79, 22, 31, 43]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块", "代码块", "if", "(", "布尔表达式", ")", "{", "代码块", "}", "else", "{", "while", "(", "布尔表达式", ")", "{", "id", "=", "算术表达式"]
+10:16:02 [INFO] buffer: ["-", "value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 43, token: -, action: "s53"
+10:16:02 [INFO] 移进: 将 s53 状态压入状态栈，将 - 符号压入符号栈
+10:16:02 [INFO] -----step 86-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28, 28, 24, 33, 50, 74, 83, 85, 87, 88, 89, 23, 32, 45, 68, 79, 22, 31, 43, 53]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块", "代码块", "if", "(", "布尔表达式", ")", "{", "代码块", "}", "else", "{", "while", "(", "布尔表达式", ")", "{", "id", "=", "算术表达式", "-"]
+10:16:02 [INFO] buffer: ["value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 53, token: value, action: "r40"
+10:16:02 [INFO] 规约: 按照第40个产生式 算术运算符 -> -  进行规约
+10:16:02 [INFO] -----step 87-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28, 28, 24, 33, 50, 74, 83, 85, 87, 88, 89, 23, 32, 45, 68, 79, 22, 31, 43, 51]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块", "代码块", "if", "(", "布尔表达式", ")", "{", "代码块", "}", "else", "{", "while", "(", "布尔表达式", ")", "{", "id", "=", "算术表达式", "算术运算符"]
+10:16:02 [INFO] buffer: ["value", ";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 51, token: value, action: "s36"
+10:16:02 [INFO] 移进: 将 s36 状态压入状态栈，将 value 符号压入符号栈
+10:16:02 [INFO] -----step 88-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28, 28, 24, 33, 50, 74, 83, 85, 87, 88, 89, 23, 32, 45, 68, 79, 22, 31, 43, 51, 36]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块", "代码块", "if", "(", "布尔表达式", ")", "{", "代码块", "}", "else", "{", "while", "(", "布尔表达式", ")", "{", "id", "=", "算术表达式", "算术运算符", "value"]
+10:16:02 [INFO] buffer: [";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 36, token: ;, action: "r25"
+10:16:02 [INFO] 规约: 按照第25个产生式 算术表达式 -> value  进行规约
+10:16:02 [INFO] -----step 89-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28, 28, 24, 33, 50, 74, 83, 85, 87, 88, 89, 23, 32, 45, 68, 79, 22, 31, 43, 51, 75]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块", "代码块", "if", "(", "布尔表达式", ")", "{", "代码块", "}", "else", "{", "while", "(", "布尔表达式", ")", "{", "id", "=", "算术表达式", "算术运算符", "算术表达式"]
+10:16:02 [INFO] buffer: [";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 75, token: ;, action: "r21"
+10:16:02 [INFO] 规约: 按照第21个产生式 算术表达式 -> 算术表达式 算术运算符 算术表达式  进行规约
+10:16:02 [INFO] -----step 90-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28, 28, 24, 33, 50, 74, 83, 85, 87, 88, 89, 23, 32, 45, 68, 79, 22, 31, 43]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块", "代码块", "if", "(", "布尔表达式", ")", "{", "代码块", "}", "else", "{", "while", "(", "布尔表达式", ")", "{", "id", "=", "算术表达式"]
+10:16:02 [INFO] buffer: [";", "}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 43, token: ;, action: "s60"
+10:16:02 [INFO] 移进: 将 s60 状态压入状态栈，将 ; 符号压入符号栈
+10:16:02 [INFO] -----step 91-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28, 28, 24, 33, 50, 74, 83, 85, 87, 88, 89, 23, 32, 45, 68, 79, 22, 31, 43, 60]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块", "代码块", "if", "(", "布尔表达式", ")", "{", "代码块", "}", "else", "{", "while", "(", "布尔表达式", ")", "{", "id", "=", "算术表达式", ";"]
+10:16:02 [INFO] buffer: ["}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 60, token: }, action: "r10"
+10:16:02 [INFO] 规约: 按照第10个产生式 代码块 -> id = 算术表达式 ;  进行规约
+10:16:02 [INFO] -----step 92-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28, 28, 24, 33, 50, 74, 83, 85, 87, 88, 89, 23, 32, 45, 68, 79, 84]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块", "代码块", "if", "(", "布尔表达式", ")", "{", "代码块", "}", "else", "{", "while", "(", "布尔表达式", ")", "{", "代码块"]
+10:16:02 [INFO] buffer: ["}", "id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 84, token: }, action: "s86"
+10:16:02 [INFO] 移进: 将 s86 状态压入状态栈，将 } 符号压入符号栈
+10:16:02 [INFO] -----step 93-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28, 28, 24, 33, 50, 74, 83, 85, 87, 88, 89, 23, 32, 45, 68, 79, 84, 86]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块", "代码块", "if", "(", "布尔表达式", ")", "{", "代码块", "}", "else", "{", "while", "(", "布尔表达式", ")", "{", "代码块", "}"]
+10:16:02 [INFO] buffer: ["id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 86, token: id, action: "r11"
+10:16:02 [INFO] 规约: 按照第11个产生式 代码块 -> while ( 布尔表达式 ) { 代码块 }  进行规约
+10:16:02 [INFO] -----step 94-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28, 28, 24, 33, 50, 74, 83, 85, 87, 88, 89, 90]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块", "代码块", "if", "(", "布尔表达式", ")", "{", "代码块", "}", "else", "{", "代码块"]
+10:16:02 [INFO] buffer: ["id", "=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 90, token: id, action: "s22"
+10:16:02 [INFO] 移进: 将 s22 状态压入状态栈，将 id 符号压入符号栈
+10:16:02 [INFO] -----step 95-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28, 28, 24, 33, 50, 74, 83, 85, 87, 88, 89, 90, 22]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块", "代码块", "if", "(", "布尔表达式", ")", "{", "代码块", "}", "else", "{", "代码块", "id"]
+10:16:02 [INFO] buffer: ["=", "value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 22, token: =, action: "s31"
+10:16:02 [INFO] 移进: 将 s31 状态压入状态栈，将 = 符号压入符号栈
+10:16:02 [INFO] -----step 96-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28, 28, 24, 33, 50, 74, 83, 85, 87, 88, 89, 90, 22, 31]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块", "代码块", "if", "(", "布尔表达式", ")", "{", "代码块", "}", "else", "{", "代码块", "id", "="]
+10:16:02 [INFO] buffer: ["value", ";", "}", "}", "#"]
+10:16:02 [INFO] state: 31, token: value, action: "s36"
+10:16:02 [INFO] 移进: 将 s36 状态压入状态栈，将 value 符号压入符号栈
+10:16:02 [INFO] -----step 97-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28, 28, 24, 33, 50, 74, 83, 85, 87, 88, 89, 90, 22, 31, 36]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块", "代码块", "if", "(", "布尔表达式", ")", "{", "代码块", "}", "else", "{", "代码块", "id", "=", "value"]
+10:16:02 [INFO] buffer: [";", "}", "}", "#"]
+10:16:02 [INFO] state: 36, token: ;, action: "r25"
+10:16:02 [INFO] 规约: 按照第25个产生式 算术表达式 -> value  进行规约
+10:16:02 [INFO] -----step 98-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28, 28, 24, 33, 50, 74, 83, 85, 87, 88, 89, 90, 22, 31, 43]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块", "代码块", "if", "(", "布尔表达式", ")", "{", "代码块", "}", "else", "{", "代码块", "id", "=", "算术表达式"]
+10:16:02 [INFO] buffer: [";", "}", "}", "#"]
+10:16:02 [INFO] state: 43, token: ;, action: "s60"
+10:16:02 [INFO] 移进: 将 s60 状态压入状态栈，将 ; 符号压入符号栈
+10:16:02 [INFO] -----step 99-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28, 28, 24, 33, 50, 74, 83, 85, 87, 88, 89, 90, 22, 31, 43, 60]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块", "代码块", "if", "(", "布尔表达式", ")", "{", "代码块", "}", "else", "{", "代码块", "id", "=", "算术表达式", ";"]
+10:16:02 [INFO] buffer: ["}", "}", "#"]
+10:16:02 [INFO] state: 60, token: }, action: "r10"
+10:16:02 [INFO] 规约: 按照第10个产生式 代码块 -> id = 算术表达式 ;  进行规约
+10:16:02 [INFO] -----step 100-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28, 28, 24, 33, 50, 74, 83, 85, 87, 88, 89, 90, 28]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块", "代码块", "if", "(", "布尔表达式", ")", "{", "代码块", "}", "else", "{", "代码块", "代码块"]
+10:16:02 [INFO] buffer: ["}", "}", "#"]
+10:16:02 [INFO] state: 28, token: }, action: "r7"
+10:16:02 [INFO] 规约: 按照第7个产生式 代码块 -> 代码块 代码块  进行规约
+10:16:02 [INFO] -----step 101-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28, 28, 24, 33, 50, 74, 83, 85, 87, 88, 89, 90]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块", "代码块", "if", "(", "布尔表达式", ")", "{", "代码块", "}", "else", "{", "代码块"]
+10:16:02 [INFO] buffer: ["}", "}", "#"]
+10:16:02 [INFO] state: 90, token: }, action: "s91"
+10:16:02 [INFO] 移进: 将 s91 状态压入状态栈，将 } 符号压入符号栈
+10:16:02 [INFO] -----step 102-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28, 28, 24, 33, 50, 74, 83, 85, 87, 88, 89, 90, 91]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块", "代码块", "if", "(", "布尔表达式", ")", "{", "代码块", "}", "else", "{", "代码块", "}"]
+10:16:02 [INFO] buffer: ["}", "#"]
+10:16:02 [INFO] state: 91, token: }, action: "r13"
+10:16:02 [INFO] 规约: 按照第13个产生式 代码块 -> if ( 布尔表达式 ) { 代码块 } else { 代码块 }  进行规约
+10:16:02 [INFO] -----step 103-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28, 28, 28]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块", "代码块", "代码块"]
+10:16:02 [INFO] buffer: ["}", "#"]
+10:16:02 [INFO] state: 28, token: }, action: "r7"
+10:16:02 [INFO] 规约: 按照第7个产生式 代码块 -> 代码块 代码块  进行规约
+10:16:02 [INFO] -----step 104-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28, 28]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块", "代码块"]
+10:16:02 [INFO] buffer: ["}", "#"]
+10:16:02 [INFO] state: 28, token: }, action: "r7"
+10:16:02 [INFO] 规约: 按照第7个产生式 代码块 -> 代码块 代码块  进行规约
+10:16:02 [INFO] -----step 105-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28, 28]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块", "代码块"]
+10:16:02 [INFO] buffer: ["}", "#"]
+10:16:02 [INFO] state: 28, token: }, action: "r7"
+10:16:02 [INFO] 规约: 按照第7个产生式 代码块 -> 代码块 代码块  进行规约
+10:16:02 [INFO] -----step 106-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 28]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "代码块"]
+10:16:02 [INFO] buffer: ["}", "#"]
+10:16:02 [INFO] state: 28, token: }, action: "r7"
+10:16:02 [INFO] 规约: 按照第7个产生式 代码块 -> 代码块 代码块  进行规约
+10:16:02 [INFO] -----step 107-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块"]
+10:16:02 [INFO] buffer: ["}", "#"]
+10:16:02 [INFO] state: 26, token: }, action: "s40"
+10:16:02 [INFO] 移进: 将 s40 状态压入状态栈，将 } 符号压入符号栈
+10:16:02 [INFO] -----step 108-----
+10:16:02 [INFO] state_stack: [0, 3, 10, 11, 12, 15, 18, 26, 40]
+10:16:02 [INFO] symbol_stack: ["#", "变量类型", "id", "(", "形式参数", ")", "{", "代码块", "}"]
+10:16:02 [INFO] buffer: ["#"]
+10:16:02 [INFO] state: 40, token: #, action: "r4"
+10:16:02 [INFO] 规约: 按照第4个产生式 函数定义 -> 变量类型 id ( 形式参数 ) { 代码块 }  进行规约
+10:16:02 [INFO] -----step 109-----
+10:16:02 [INFO] state_stack: [0, 2]
+10:16:02 [INFO] symbol_stack: ["#", "函数定义"]
+10:16:02 [INFO] buffer: ["#"]
+10:16:02 [INFO] state: 2, token: #, action: "r1"
+10:16:02 [INFO] 规约: 按照第1个产生式 程序 -> 函数定义  进行规约
+10:16:02 [INFO] -----step 110-----
+10:16:02 [INFO] state_stack: [0, 1]
+10:16:02 [INFO] symbol_stack: ["#", "程序"]
+10:16:02 [INFO] buffer: ["#"]
+10:16:02 [INFO] state: 1, token: #, action: "acc"
+10:16:02 [INFO] 接受
+10:16:02 [INFO] slr1 success: true
