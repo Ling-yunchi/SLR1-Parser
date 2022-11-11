@@ -371,13 +371,23 @@ pub fn slr1_analysis_with_log(
                 state_stack.pop();
                 symbol_stack.pop();
             }
-            // 将产生式左部压入符号栈
-            symbol_stack.push(p.left.clone());
+            info!("弹出{}个状态栈和符号栈中的元素", p.right.len());
+            info!("state_stack: {:?}", state_stack);
+            info!("symbol_stack: {:?}", symbol_stack);
             // 获取GOTO表中的状态
             let s = state_stack.last().unwrap();
             let state = GOTO[*s].get(&p.left).unwrap();
+            info!(
+                "查询GOTO表: 当前状态为 {} 时,接收到 {} 应当跳转到 {} 状态。",
+                s, p.left, state
+            );
+            // 将产生式左部压入符号栈
+            symbol_stack.push(p.left.clone());
             // 将状态压入状态栈
             state_stack.push(state.parse::<usize>().unwrap());
+            info!("将 {} 状态压入状态栈，将 {} 符号压入符号栈", state, p.left);
+            info!("state_stack: {:?}", state_stack);
+            info!("symbol_stack: {:?}", symbol_stack);
         }
         // 如果是接受
         else if action == "acc" {
@@ -740,7 +750,7 @@ fn goto(items: &Vec<Item>, x: &str, g: &Grammar) -> Vec<Item> {
 ///
 /// 即完善项目集I中的状态，将非终结符展开，找出下一步能接受的终结符
 ///
-/// 可以理解为求出项目集I的完整表达，便于合并相同的项目集对应的状态
+/// 可以理解为求出项目集I的完整表达，便于求出下一步能接受的终结符
 fn closure(i: &[Item], g: &Grammar) -> Vec<Item> {
     // 用于存储闭包
     let mut j = i.to_vec();
