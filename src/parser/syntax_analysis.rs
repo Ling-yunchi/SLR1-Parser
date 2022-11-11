@@ -96,17 +96,17 @@ pub fn syntax_analysis(tokens: Vec<Token>) -> Result<(), SyntaxError> {
 /// ## 输入
 /// - 输入文法为非拓广文法
 fn get_SLR1_table(g: &Grammar) -> (Vec<HashMap<String, String>>, Vec<HashMap<String, String>>) {
-    let mut g = g.clone();
+    let mut outreach_g = g.clone();
     // 获取非拓广文法G的FOLLOW集，进行规约时使用
-    let follow = get_follow(&g);
+    let follow = get_follow(&outreach_g);
 
     // 将非拓广文法G转换为拓广文法G'
     // 即修改开始符号为S'，添加产生式S' -> S，并将S'加入非终结符集
-    let raw_s = g.s.clone();
-    g.s = raw_s.clone() + "'";
-    g.v.push(g.s.clone());
-    g.p.push(Product {
-        left: g.s.clone(),
+    let raw_s = outreach_g.s.clone();
+    outreach_g.s = raw_s.clone() + "'";
+    outreach_g.v.push(outreach_g.s.clone());
+    outreach_g.p.push(Product {
+        left: outreach_g.s.clone(),
         right: vec![raw_s],
     });
     // 拓广文法的目的是保证文法的开始符号的定义只有一个产生式
@@ -114,12 +114,12 @@ fn get_SLR1_table(g: &Grammar) -> (Vec<HashMap<String, String>>, Vec<HashMap<Str
     // 也保证了G'只有唯一的接受状态
 
     // 求解G'的LR(0)项目集族
-    let lr0_items = get_lr0_collection(&g);
+    let lr0_items = get_lr0_collection(&outreach_g);
 
     // Action表初始化
     let mut ACTION = Vec::new();
     let mut row = HashMap::new();
-    g.t.iter().for_each(|t| {
+    outreach_g.t.iter().for_each(|t| {
         row.insert(t.clone(), "".to_string());
     });
     row.insert("#".to_string(), "".to_string());
@@ -129,8 +129,8 @@ fn get_SLR1_table(g: &Grammar) -> (Vec<HashMap<String, String>>, Vec<HashMap<Str
 
     // Goto表初始化
     let mut GOTO = Vec::new();
-    let mut temp_v = g.v.clone().into_iter().collect::<HashSet<_>>();
-    temp_v.remove((g.s.clone() + "'").as_str());
+    let mut temp_v = outreach_g.v.clone().into_iter().collect::<HashSet<_>>();
+    temp_v.remove((outreach_g.s.clone() + "'").as_str());
     let mut row = HashMap::new();
     temp_v.iter().for_each(|v| {
         row.insert(v.clone(), "".to_string());
@@ -154,9 +154,9 @@ fn get_SLR1_table(g: &Grammar) -> (Vec<HashMap<String, String>>, Vec<HashMap<Str
                 // 找出项目集items在读入下一个字符ch后，转移到的项目集
                 // 即找到使得goto(I, ch) = lr0_items[j]成立的j
                 for (j, items1) in lr0_items.iter().enumerate() {
-                    if items_eq(&goto(items, ch, &g), items1) {
+                    if items_eq(&goto(items, ch, &outreach_g), items1) {
                         // 如果ch为终结符，则将ACTION[i, ch]置为sj
-                        if g.t.contains(ch) {
+                        if outreach_g.t.contains(ch) {
                             ACTION[i].insert(ch.clone(), format!("s{}", j));
                         }
                         // 如果ch为非终结符，则将GOTO[i, ch]置为j
@@ -170,18 +170,19 @@ fn get_SLR1_table(g: &Grammar) -> (Vec<HashMap<String, String>>, Vec<HashMap<Str
             // 圆点在LR(0)项目的最后，则需要规约
             else {
                 // 如果是S'->S.，则将ACTION[k, #]置为acc
-                if item.left == g.s {
+                if item.left == outreach_g.s {
                     ACTION[i].insert("#".to_string(), "acc".to_string());
                 }
                 // 否则，对于任何终结符a∈FOLLOW(A)，将ACTION[k, a]置为rj
                 else {
-                    let j =
-                        g.p.iter()
-                            .position(|p| p.left == item.left && p.right == item.right)
-                            .unwrap();
+                    let j = outreach_g
+                        .p
+                        .iter()
+                        .position(|p| p.left == item.left && p.right == item.right)
+                        .unwrap();
                     let follow_left = follow.get(&item.left).unwrap();
                     for f in follow_left {
-                        if g.t.contains(f) {
+                        if outreach_g.t.contains(f) {
                             ACTION[i].insert(f.clone(), format!("r{}", j));
                         }
                     }
@@ -556,11 +557,17 @@ struct Item {
     dot: usize,
 }
 
+/// # 求LR(0)项目集族
+///
+/// 每个项目集都是一个状态，项目集族就是所有状态的集合
+///
+/// 即求出识别过程中的所有状态
 fn get_lr0_collection(g: &Grammar) -> Vec<Vec<Item>> {
-    // 项目集族
-    let mut I = vec![];
+    // 项目集规范族，所有状态的集合
+    let mut C = vec![];
 
-    // 先将 S' -> ·S 加入到项目集族中
+    // 开始项目集(状态)，将 S' -> ·S 加入到项目集族中
+    let mut I = vec![];
     let first_prodution = g.p.iter().find(|p| p.left == g.s).unwrap();
     I.push(Item {
         left: first_prodution.left.clone(),
@@ -568,8 +575,7 @@ fn get_lr0_collection(g: &Grammar) -> Vec<Vec<Item>> {
         dot: 0,
     });
 
-    // 项目集规范族
-    let mut C = vec![];
+    // 将开始项目集的完整表达加入到项目集规范族中
     C.push(closure(&I, g));
 
     // 终结符集和非终结符集
@@ -579,16 +585,23 @@ fn get_lr0_collection(g: &Grammar) -> Vec<Vec<Item>> {
             .cloned()
             .collect::<Vec<String>>();
 
-    // 用于记录还未处理的项目集，相当于队列
+    // 用于记录还未处理的项目集(状态)，相当于队列
+    // 这里的处理是指求项目集(状态)接受任意终结符或非终结符能转移到的其他项目集(状态)
     let mut E = C.clone().into_iter().collect::<VecDeque<Vec<Item>>>();
 
     while E.len() > 0 {
+        // 取出一个项目集
         let IT = E.pop_front().unwrap();
+        // 对于每个终结符或非终结符 a
         v_t.iter().for_each(|a| {
+            // 求项目集 IT 在接受符号 a 时转移到的项目集
             let J = goto(&IT, a, g);
             if J.len() > 0 {
+                // 如果项目集 J 不在 C 中
                 if !C.contains(&J) {
+                    // 将 J 加入到 C 中
                     C.push(J.clone());
+                    // 将 J 加入到为处理的项目集 E 中
                     E.push_back(J);
                 }
             }
@@ -598,11 +611,13 @@ fn get_lr0_collection(g: &Grammar) -> Vec<Vec<Item>> {
     C
 }
 
-/// 项目集的状态转移函数
+/// # 项目集的状态转移函数
 ///
-/// @param I 项目集
-/// @param x 终结符或非终结符
-/// @return 项目集 I 关于 x 的后续项目集
+/// 求解项目集 I 接受 x 后转移到的项目集 J
+///
+/// 找到项目集中形如 A -> α·xβ 的项目，将 A -> αx·β 加入到 J 中
+///
+/// 然后求J的完整表示，即求闭包
 fn goto(it: &Vec<Item>, x: &str, g: &Grammar) -> Vec<Item> {
     let mut J = vec![];
 
@@ -611,17 +626,26 @@ fn goto(it: &Vec<Item>, x: &str, g: &Grammar) -> Vec<Item> {
             return;
         }
         let a = &i.right[i.dot];
+        // 找到形如 A -> α·xβ 的项目
         if a == x && (g.v.contains(a) || g.t.contains(a)) {
+            // 将 A -> αx·β 加入到 J 中
             let mut j = i.clone();
             j.dot += 1;
             J.push(j);
         }
     });
 
+    // 求闭包，即求出该状态的完整表达
     closure(&J, g)
 }
 
-/// 在拓广文法G'中求解项目I的闭包J
+/// # 在拓广文法G'中求解项目集I的闭包J
+///
+/// 闭包的定义为：J = I U {B -> ·γ | A -> α·Bβ ∈ J, B -> γ ∈ G'}
+///
+/// 即完善项目集I中的状态，将非终结符展开，找出下一步能接受的终结符
+///
+/// 可以理解为求出项目集I的完整表达，便于合并相同的项目集对应的状态
 fn closure(i: &[Item], g: &Grammar) -> Vec<Item> {
     // 用于存储闭包
     let mut j = i.to_vec();
@@ -629,8 +653,8 @@ fn closure(i: &[Item], g: &Grammar) -> Vec<Item> {
     let mut e = i.to_vec().into_iter().collect::<VecDeque<Item>>();
 
     while e.len() > 0 {
+        // 取出队列中的第一个项目
         let item = e.pop_front().unwrap();
-        // 如果项目的·后面是非终结符，则求出其first集
         if item.dot < item.right.len() {
             // 获取圆点后面的第一个单词
             let a = &item.right[item.dot];
@@ -640,7 +664,7 @@ fn closure(i: &[Item], g: &Grammar) -> Vec<Item> {
                 continue;
             }
 
-            // 遍历所有产生式，找到左部为a的产生式
+            // 若为非终结符，遍历所有产生式，找到左部为a的产生式
             g.p.iter().filter(|p| p.left == *a).for_each(|p| {
                 // 将产生式加入到闭包中
                 let new_item = Item {
@@ -659,6 +683,9 @@ fn closure(i: &[Item], g: &Grammar) -> Vec<Item> {
     j
 }
 
+/// # 对比两个项目集是否相同
+///
+/// 当两个项目集长度相同且对一个项目集中的每个项目都能在另一个项目集中找到对应的项目时，两个项目集相同
 fn items_eq(items1: &Vec<Item>, items2: &Vec<Item>) -> bool {
     if items1.len() != items2.len() {
         return false;
