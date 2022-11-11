@@ -10,7 +10,7 @@ GUI采用tauri，但由于某些铸币😰操作，tauri界面的源码全部丢
 
 想使用tauri的GUI请下载`app_0.0.0_x64_en-US.msi`(只有windows版)并安装。
 
-`src/parser`中包含了所有核心代码与~~基本完整~~的测试，使用方法应该看完测试就懂了。
+`src/parser`中包含了所有核心代码与~~基本完整的~~测试，使用方法应该看完测试就懂了。
 
 本项目支持使用yml自定义用于分析的文法，示例在`grammar_example.yml`中。
 
