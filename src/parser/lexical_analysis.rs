@@ -1,5 +1,4 @@
-use core::num;
-use std::{error::Error, fmt::Display, process::id};
+use std::fmt::Display;
 
 use super::error::LexicalError;
 
@@ -373,7 +372,6 @@ fn remove_comment(input: String) -> Result<String, LexicalError> {
 
 #[cfg(test)]
 mod tests {
-    use std::result;
 
     use super::*;
 

@@ -2,7 +2,7 @@ use super::{
     error::{GrammarError, SyntaxError},
     lexical_analysis::{Token, TokenType},
 };
-use log::{debug, error, info, warn};
+use log::{debug, error, info};
 use serde::{Deserialize, Serialize};
 use std::{
     collections::{HashMap, HashSet, VecDeque},
@@ -87,7 +87,7 @@ pub fn syntax_analysis(tokens: Vec<Token>) -> Result<(), SyntaxError> {
         .map_err(|e| SyntaxError::new(&format!("Failed to parse grammar file error: {}", e)))?;
     grammar
         .validate()
-        .map_err(|e| SyntaxError::new(&format!("Grammar valida error: {}", e)))?;
+        .map_err(|e| SyntaxError::new(&format!("Grammar validate error: {}", e)))?;
 
     Ok(())
 }
@@ -99,7 +99,7 @@ pub fn syntax_analysis(tokens: Vec<Token>) -> Result<(), SyntaxError> {
 /// 2. 求解拓广文法G'的FOLLOW集，规约时使用
 /// 3. 求解拓广文法G'的LR(0)项目集族
 /// 4. 遍历项目集族，构造ACTION表与GOTO表
-pub fn get_SLR1_table(g: &Grammar) -> (Vec<HashMap<String, String>>, Vec<HashMap<String, String>>) {
+pub fn get_slr1_table(g: &Grammar) -> (Vec<HashMap<String, String>>, Vec<HashMap<String, String>>) {
     let mut outreach_g = g.clone();
     // 获取非拓广文法G的FOLLOW集，进行规约时使用
     let follow = get_follow(&outreach_g);
@@ -123,9 +123,9 @@ pub fn get_SLR1_table(g: &Grammar) -> (Vec<HashMap<String, String>>, Vec<HashMap
     // Action表初始化
     let mut ACTION = Vec::new();
     let mut row = HashMap::new();
-    // outreach_g.t.iter().for_each(|t| {
-    //     row.insert(t.clone(), "".to_string());
-    // });
+    outreach_g.t.iter().for_each(|t| {
+        row.insert(t.clone(), "".to_string());
+    });
     row.insert("#".to_string(), "".to_string());
     lr0_items.iter().for_each(|_| {
         ACTION.push(row.clone());
@@ -133,12 +133,12 @@ pub fn get_SLR1_table(g: &Grammar) -> (Vec<HashMap<String, String>>, Vec<HashMap
 
     // Goto表初始化
     let mut GOTO = Vec::new();
-    // let mut temp_v = outreach_g.v.clone().into_iter().collect::<HashSet<_>>();
-    // temp_v.remove((outreach_g.s.clone() + "'").as_str());
+    let mut temp_v = outreach_g.v.clone().into_iter().collect::<HashSet<_>>();
+    temp_v.remove((outreach_g.s.clone() + "'").as_str());
     let mut row = HashMap::new();
-    // temp_v.iter().for_each(|v| {
-    //     row.insert(v.clone(), "".to_string());
-    // });
+    temp_v.iter().for_each(|v| {
+        row.insert(v.clone(), "".to_string());
+    });
     lr0_items.iter().for_each(|_| {
         GOTO.push(row.clone());
     });
@@ -659,19 +659,19 @@ struct Item {
 /// 即求出识别过程中的所有状态
 fn get_lr0_collection(g: &Grammar) -> Vec<Vec<Item>> {
     // 项目集规范族，所有状态的集合
-    let mut C = vec![];
+    let mut c = vec![];
 
     // 开始项目集(状态)，将 S' -> ·S 加入到项目集族中
-    let mut I = vec![];
+    let mut i = vec![];
     let first_prodution = g.p.iter().find(|p| p.left == g.s).unwrap();
-    I.push(Item {
+    i.push(Item {
         left: first_prodution.left.clone(),
         right: first_prodution.right.clone(),
         dot: 0,
     });
 
     // 将开始项目集的完整表达加入到项目集规范族中
-    C.push(closure(&I, g));
+    c.push(closure(&i, g));
 
     // 终结符集和非终结符集
     let v_t =
@@ -682,28 +682,28 @@ fn get_lr0_collection(g: &Grammar) -> Vec<Vec<Item>> {
 
     // 用于记录还未处理的项目集(状态)，相当于队列
     // 这里的处理是指求项目集(状态)接受任意终结符或非终结符能转移到的其他项目集(状态)
-    let mut E = C.clone().into_iter().collect::<VecDeque<Vec<Item>>>();
+    let mut e = c.clone().into_iter().collect::<VecDeque<Vec<Item>>>();
 
-    while E.len() > 0 {
+    while e.len() > 0 {
         // 取出一个项目集
-        let IT = E.pop_front().unwrap();
-        // 对于每个终结符或非终结符 a
-        v_t.iter().for_each(|a| {
-            // 求项目集 IT 在接受符号 a 时转移到的项目集
-            let J = goto(&IT, a, g);
-            if J.len() > 0 {
-                // 如果项目集 J 不在 C 中
-                if !C.contains(&J) {
-                    // 将 J 加入到 C 中
-                    C.push(J.clone());
-                    // 将 J 加入到为处理的项目集 E 中
-                    E.push_back(J);
+        let items = e.pop_front().unwrap();
+        // 对于每个终结符或非终结符 x
+        v_t.iter().for_each(|x| {
+            // 求项目集 IT 在接受符号 x 时转移到的项目集
+            let to_items = goto(&items, x, g);
+            if to_items.len() > 0 {
+                // 如果项目集 to_items 不在 C 中
+                if !c.contains(&to_items) {
+                    // 将 to_items 加入到 C 中
+                    c.push(to_items.clone());
+                    // 将 to_items 加入到未处理的项目集 E 中
+                    e.push_back(to_items);
                 }
             }
         });
     }
 
-    C
+    c
 }
 
 /// # 项目集的状态转移函数
@@ -713,25 +713,25 @@ fn get_lr0_collection(g: &Grammar) -> Vec<Vec<Item>> {
 /// 找到项目集中形如 A -> α·xβ 的项目，将 A -> αx·β 加入到 J 中
 ///
 /// 然后求J的完整表示，即求闭包
-fn goto(it: &Vec<Item>, x: &str, g: &Grammar) -> Vec<Item> {
-    let mut J = vec![];
+fn goto(items: &Vec<Item>, x: &str, g: &Grammar) -> Vec<Item> {
+    let mut j = vec![];
 
-    it.iter().for_each(|i| {
-        if i.dot >= i.right.len() {
+    items.iter().for_each(|item| {
+        if item.dot >= item.right.len() {
             return;
         }
-        let a = &i.right[i.dot];
+        let a = &item.right[item.dot];
         // 找到形如 A -> α·xβ 的项目
         if a == x && (g.v.contains(a) || g.t.contains(a)) {
             // 将 A -> αx·β 加入到 J 中
-            let mut j = i.clone();
-            j.dot += 1;
-            J.push(j);
+            let mut new_item = item.clone();
+            new_item.dot += 1;
+            j.push(new_item);
         }
     });
 
     // 求闭包，即求出该状态的完整表达
-    closure(&J, g)
+    closure(&j, g)
 }
 
 /// # 在拓广文法G'中求解项目集I的闭包J
@@ -797,7 +797,7 @@ fn items_eq(items1: &Vec<Item>, items2: &Vec<Item>) -> bool {
 
 #[cfg(test)]
 mod tests {
-    use std::{env::set_var, fs::File, io::Write};
+    use std::fs::File;
 
     use log::info;
     use simplelog::*;
@@ -805,7 +805,7 @@ mod tests {
     use super::Grammar;
     use crate::parser::{
         lexical_analysis::lexical_analysis,
-        syntax_analysis::{get_SLR1_table, get_first, get_follow, slr1_analysis},
+        syntax_analysis::{get_first, get_follow, get_slr1_table, slr1_analysis},
     };
 
     #[test]
@@ -829,7 +829,7 @@ mod tests {
         };
     }
 
-    const grammar_yml: &str = r#"
+    const GRAMMAR_YML: &str = r#"
     s: E
     v:
       - E
@@ -881,11 +881,11 @@ mod tests {
 
     #[test]
     fn test_first() {
-        let g = Grammar::from_yml(grammar_yml).unwrap();
+        let g = Grammar::from_yml(GRAMMAR_YML).unwrap();
         println!("{:#?}", g);
         let mut first = get_first(&g);
         println!("{:#?}", first);
-        first.iter_mut().for_each(|(k, v)| {
+        first.iter_mut().for_each(|(_k, v)| {
             v.sort();
         });
 
@@ -909,11 +909,11 @@ mod tests {
 
     #[test]
     fn test_follow() {
-        let g = Grammar::from_yml(grammar_yml).unwrap();
+        let g = Grammar::from_yml(GRAMMAR_YML).unwrap();
         println!("{:#?}", g);
         let mut follow = get_follow(&g);
         println!("{:#?}", follow);
-        follow.iter_mut().for_each(|(k, v)| {
+        follow.iter_mut().for_each(|(_k, v)| {
             v.sort();
         });
 
@@ -929,7 +929,7 @@ mod tests {
         );
     }
 
-    const program: &str = r#"
+    const PROGRAM: &str = r#"
     // This is a note.
     int main(int a, int b){
         int res;
@@ -966,7 +966,7 @@ mod tests {
         ])
         .unwrap();
 
-        let (tokens, success) = lexical_analysis(program.to_string()).unwrap();
+        let (tokens, _success) = lexical_analysis(PROGRAM.to_string()).unwrap();
         info!("tokens:");
         for token in tokens.iter() {
             info!(
@@ -999,7 +999,7 @@ mod tests {
         }
 
         let mut first = get_first(&g);
-        first.iter_mut().for_each(|(k, v)| {
+        first.iter_mut().for_each(|(_k, v)| {
             v.sort();
         });
         info!("first:");
@@ -1008,7 +1008,7 @@ mod tests {
         }
 
         let mut follow = get_follow(&g);
-        follow.iter_mut().for_each(|(k, v)| {
+        follow.iter_mut().for_each(|(_k, v)| {
             v.sort();
         });
         info!("follow:");
@@ -1016,7 +1016,7 @@ mod tests {
             info!("FOLLOW(\"{}\") = {:?}", k, v);
         }
 
-        let (action, goto) = get_SLR1_table(&g);
+        let (action, goto) = get_slr1_table(&g);
         info!("action:");
         let mut buffer = String::new();
         buffer.push_str(&format!("{:<6}", ""));
@@ -1063,7 +1063,7 @@ mod tests {
             buffer.clear();
         }
 
-        let mut slr1 = slr1_analysis(&g, &action, &goto, tokens);
+        let slr1 = slr1_analysis(&g, &action, &goto, tokens);
         info!("slr1 success: {:?}", slr1);
         assert!(slr1);
     }

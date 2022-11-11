@@ -5,9 +5,7 @@ use simplelog::{ColorChoice, CombinedLogger, Config, TermLogger, TerminalMode, W
 
 use crate::parser::{
     lexical_analysis::lexical_analysis,
-    syntax_analysis::{
-        get_SLR1_table, get_first, get_follow, slr1_analysis, slr1_analysis_with_log, Grammar,
-    },
+    syntax_analysis::{get_first, get_follow, get_slr1_table, slr1_analysis_with_log, Grammar},
 };
 
 mod parser;
@@ -30,7 +28,7 @@ fn main() {
 
     let program = std::fs::read_to_string("program.txt").expect("Unable to read file program.txt");
 
-    let (tokens, success) = lexical_analysis(program.to_string()).unwrap();
+    let (tokens, _success) = lexical_analysis(program.to_string()).unwrap();
     info!("tokens:");
     for token in tokens.iter() {
         info!(
@@ -63,7 +61,7 @@ fn main() {
     }
 
     let mut first = get_first(&g);
-    first.iter_mut().for_each(|(k, v)| {
+    first.iter_mut().for_each(|(_k, v)| {
         v.sort();
     });
     info!("first:");
@@ -72,7 +70,7 @@ fn main() {
     }
 
     let mut follow = get_follow(&g);
-    follow.iter_mut().for_each(|(k, v)| {
+    follow.iter_mut().for_each(|(_k, v)| {
         v.sort();
     });
     info!("follow:");
@@ -80,7 +78,7 @@ fn main() {
         info!("FOLLOW(\"{}\") = {:?}", k, v);
     }
 
-    let (action, goto) = get_SLR1_table(&g);
+    let (action, goto) = get_slr1_table(&g);
     info!("action:");
     let mut buffer = String::new();
     buffer.push_str(&format!("{:<6}", ""));
