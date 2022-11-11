@@ -41,12 +41,12 @@ pub struct Grammar {
 
 impl Grammar {
     /// 从yml中读取语法定义
-    fn from_yml(input: &str) -> Result<Grammar, serde_yaml::Error> {
+    pub fn from_yml(input: &str) -> Result<Grammar, serde_yaml::Error> {
         serde_yaml::from_str::<Grammar>(input)
     }
 
     /// 验证语法定义是否合法
-    fn validate(&self) -> Result<(), GrammarError> {
+    pub fn validate(&self) -> Result<(), GrammarError> {
         // 验证终结符和非终结符没有重复元素
         let s = self.v.iter().chain(self.t.iter()).collect::<HashSet<_>>();
         if s.len() != self.v.len() + self.t.len() {
@@ -93,9 +93,13 @@ pub fn syntax_analysis(tokens: Vec<Token>) -> Result<(), SyntaxError> {
 }
 
 /// # 对输入文法G获取SLR(1)分析表
-/// ## 输入
-/// - 输入文法为非拓广文法
-fn get_SLR1_table(g: &Grammar) -> (Vec<HashMap<String, String>>, Vec<HashMap<String, String>>) {
+///
+/// 获取ACTION表与GOTO表
+/// 1. 将非拓广文法G转换为拓广文法G'
+/// 2. 求解拓广文法G'的FOLLOW集，规约时使用
+/// 3. 求解拓广文法G'的LR(0)项目集族
+/// 4. 遍历项目集族，构造ACTION表与GOTO表
+pub fn get_SLR1_table(g: &Grammar) -> (Vec<HashMap<String, String>>, Vec<HashMap<String, String>>) {
     let mut outreach_g = g.clone();
     // 获取非拓广文法G的FOLLOW集，进行规约时使用
     let follow = get_follow(&outreach_g);
@@ -119,9 +123,9 @@ fn get_SLR1_table(g: &Grammar) -> (Vec<HashMap<String, String>>, Vec<HashMap<Str
     // Action表初始化
     let mut ACTION = Vec::new();
     let mut row = HashMap::new();
-    outreach_g.t.iter().for_each(|t| {
-        row.insert(t.clone(), "".to_string());
-    });
+    // outreach_g.t.iter().for_each(|t| {
+    //     row.insert(t.clone(), "".to_string());
+    // });
     row.insert("#".to_string(), "".to_string());
     lr0_items.iter().for_each(|_| {
         ACTION.push(row.clone());
@@ -129,12 +133,12 @@ fn get_SLR1_table(g: &Grammar) -> (Vec<HashMap<String, String>>, Vec<HashMap<Str
 
     // Goto表初始化
     let mut GOTO = Vec::new();
-    let mut temp_v = outreach_g.v.clone().into_iter().collect::<HashSet<_>>();
-    temp_v.remove((outreach_g.s.clone() + "'").as_str());
+    // let mut temp_v = outreach_g.v.clone().into_iter().collect::<HashSet<_>>();
+    // temp_v.remove((outreach_g.s.clone() + "'").as_str());
     let mut row = HashMap::new();
-    temp_v.iter().for_each(|v| {
-        row.insert(v.clone(), "".to_string());
-    });
+    // temp_v.iter().for_each(|v| {
+    //     row.insert(v.clone(), "".to_string());
+    // });
     lr0_items.iter().for_each(|_| {
         GOTO.push(row.clone());
     });
@@ -206,7 +210,7 @@ fn get_SLR1_table(g: &Grammar) -> (Vec<HashMap<String, String>>, Vec<HashMap<Str
 /// ## 输出
 /// - `true`: 分析成功
 /// - `false`: 分析失败
-fn slr1_analysis(
+pub fn slr1_analysis(
     g: &Grammar,
     ACTION: &Vec<HashMap<String, String>>,
     GOTO: &Vec<HashMap<String, String>>,
@@ -297,7 +301,98 @@ fn slr1_analysis(
     }
 }
 
-fn get_first(g: &Grammar) -> HashMap<String, Vec<String>> {
+pub fn slr1_analysis_with_log(
+    g: &Grammar,
+    ACTION: &Vec<HashMap<String, String>>,
+    GOTO: &Vec<HashMap<String, String>>,
+    tokens: Vec<Token>,
+) -> bool {
+    // 初始化状态栈和符号栈
+    let mut state_stack = vec![0];
+    let mut symbol_stack = vec!["#".to_string()];
+
+    // 输入缓冲区
+    let mut buffer = tokens
+        .into_iter()
+        .map(|token| match token.token_type {
+            TokenType::Identifier => "id".to_string(),
+            TokenType::Constant => "value".to_string(),
+            _ => token.token_value,
+        })
+        .collect::<VecDeque<String>>();
+    buffer.push_back("#".to_string());
+    info!("init buffer: {:?}", buffer);
+
+    let mut step = 1;
+    loop {
+        info!("-----step {}-----", step);
+        info!("state_stack: {:?}", state_stack);
+        info!("symbol_stack: {:?}", symbol_stack);
+        info!("buffer: {:?}", buffer);
+        step += 1;
+        // 获取状态栈栈顶元素
+        let state = state_stack.last().unwrap();
+        // 获取输入缓冲区第一个元素
+        let token = match buffer.front() {
+            Some(token) => token,
+            None => {
+                error!("输入缓冲区为空");
+                return false;
+            }
+        };
+        // 获取ACTION表中的状态
+        let action = match ACTION[*state].get(token) {
+            Some(action) => action,
+            None => {
+                error!("ACTION表中没有状态({}, {})", state, token);
+                return false;
+            }
+        };
+        info!("state: {}, token: {}, action: {:?}", state, token, action);
+        // 如果是移进
+        if action.starts_with("s") {
+            info!(
+                "移进: 将 {} 状态压入状态栈，将 {} 符号压入符号栈",
+                action, token
+            );
+            // 将状态压入状态栈
+            state_stack.push(action[1..].parse::<usize>().unwrap());
+            // 将输入缓冲区第一个元素压入符号栈
+            symbol_stack.push(buffer.pop_front().unwrap());
+        }
+        // 如果是规约
+        else if action.starts_with("r") {
+            // 获取产生式
+            let k = action[1..].parse::<usize>().unwrap();
+            let p = &g.p[k];
+            info!("规约: 按照第{}个产生式 {} 进行规约", k, p);
+            // 弹出状态栈中与产生式右部长度相同的元素
+            for _ in 0..p.right.len() {
+                state_stack.pop();
+                symbol_stack.pop();
+            }
+            // 将产生式左部压入符号栈
+            symbol_stack.push(p.left.clone());
+            // 获取GOTO表中的状态
+            let s = state_stack.last().unwrap();
+            let state = GOTO[*s].get(&p.left).unwrap();
+            // 将状态压入状态栈
+            state_stack.push(state.parse::<usize>().unwrap());
+        }
+        // 如果是接受
+        else if action == "acc" {
+            info!("接受");
+            return true;
+        }
+        // 如果是错误
+        else {
+            error!("错误");
+            return false;
+        }
+    }
+}
+
+pub fn get_first(g: &Grammar) -> HashMap<String, Vec<String>> {
     let mut first = HashMap::new();
     // 终结符的 first 集合为自身
     g.t.iter().for_each(|t| {
@@ -399,12 +494,12 @@ fn union_first(first: &mut HashMap<String, Vec<String>>, x: &str, y: &str, disca
     before < after
 }
 
-fn get_follow(g: &Grammar) -> HashMap<String, Vec<String>> {
+pub fn get_follow(g: &Grammar) -> HashMap<String, Vec<String>> {
     let mut first = get_first(g);
     get_follow_with_first(g, &mut first)
 }
 
-fn get_follow_with_first(
+pub fn get_follow_with_first(
     g: &Grammar,
     first: &mut HashMap<String, Vec<String>>,
 ) -> HashMap<String, Vec<String>> {
@@ -872,7 +967,13 @@ mod tests {
         .unwrap();
 
         let (tokens, success) = lexical_analysis(program.to_string()).unwrap();
-        info!("tokens: {:?}", tokens);
+        info!("tokens:");
+        for token in tokens.iter() {
+            info!(
+                "value: \"{}\", type: {}",
+                token.token_value, token.token_type
+            );
+        }
 
         let yml = std::fs::read_to_string("grammar.yml").unwrap();
         let g = Grammar::from_yml(&yml).unwrap();
@@ -880,26 +981,90 @@ mod tests {
             Ok(_) => {}
             Err(_) => panic!("grammar is not valid"),
         }
-        info!("grammar: {:?}", g);
+        info!("grammar:");
+        info!("s: {}", g.s);
+        info!("v: {:?}", g.v);
+        info!("t: {:?}", g.t);
+        info!("p:");
+        for p in g.p.iter() {
+            info!(
+                "  \"{}\" -> {}",
+                p.left,
+                p.right
+                    .iter()
+                    .map(|s| format!("\"{}\"", s))
+                    .collect::<Vec<_>>()
+                    .join(" ")
+            );
+        }
 
         let mut first = get_first(&g);
         first.iter_mut().for_each(|(k, v)| {
             v.sort();
         });
-        info!("first: {:?}", first);
+        info!("first:");
+        for (k, v) in first.iter() {
+            info!("FIRST(\"{}\") = {:?}", k, v);
+        }
 
         let mut follow = get_follow(&g);
         follow.iter_mut().for_each(|(k, v)| {
             v.sort();
         });
-        info!("follow: {:?}", follow);
+        info!("follow:");
+        for (k, v) in follow.iter() {
+            info!("FOLLOW(\"{}\") = {:?}", k, v);
+        }
 
         let (action, goto) = get_SLR1_table(&g);
-        info!("action: {:?}", action);
-        info!("goto: {:?}", goto);
+        info!("action:");
+        let mut buffer = String::new();
+        buffer.push_str(&format!("{:<6}", ""));
+        for t in &g.t {
+            buffer.push_str(&format!("{:<6}", t));
+        }
+        buffer.push_str(&format!("{:<6}", "#"));
+        info!("{}", buffer);
+        buffer.clear();
+        for (i, map) in action.iter().enumerate() {
+            buffer.push_str(&format!("{:<6}", i));
+            for t in &g.t {
+                if let Some(act) = map.get(t) {
+                    buffer.push_str(&format!("{:<6}", act));
+                } else {
+                    buffer.push_str(&format!("{:<6}", ""));
+                }
+            }
+            if let Some(act) = map.get("#") {
+                buffer.push_str(&format!("{:<6}", act));
+            } else {
+                buffer.push_str(&format!("{:<6}", ""));
+            }
+            info!("{}", buffer);
+            buffer.clear();
+        }
+        info!("goto:");
+        buffer.push_str(&format!("{:<10}", ""));
+        for nt in &g.v {
+            buffer.push_str(&format!("{:<10}", nt));
+        }
+        info!("{}", buffer);
+        buffer.clear();
+        for (i, map) in goto.iter().enumerate() {
+            buffer.push_str(&format!("{:<10}", i));
+            for nt in &g.v {
+                if let Some(act) = map.get(nt) {
+                    buffer.push_str(&format!("{:<10}", act));
+                } else {
+                    buffer.push_str(&format!("{:<10}", ""));
+                }
+            }
+            info!("{}", buffer);
+            buffer.clear();
+        }
 
         let mut slr1 = slr1_analysis(&g, &action, &goto, tokens);
-        info!("slr1: {:?}", slr1);
+        info!("slr1 success: {:?}", slr1);
         assert!(slr1);
     }
 }

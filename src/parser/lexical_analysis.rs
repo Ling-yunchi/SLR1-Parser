@@ -1,5 +1,5 @@
 use core::num;
-use std::{error::Error, process::id};
+use std::{error::Error, fmt::Display, process::id};
 
 use super::error::LexicalError;
 
@@ -60,6 +60,19 @@ impl PartialEq for TokenType {
         match (self, other) {
             (Self::Error(l0), Self::Error(r0)) => l0.to_string() == r0.to_string(),
             _ => core::mem::discriminant(self) == core::mem::discriminant(other),
+        }
+    }
+}
+
+impl Display for TokenType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Keyword => write!(f, "Keyword"),
+            Self::Identifier => write!(f, "Identifier"),
+            Self::Constant => write!(f, "Constant"),
+            Self::Operator => write!(f, "Operator"),
+            Self::Delimiter => write!(f, "Delimiter"),
+            Self::Error(e) => write!(f, "Error: {}", e),
         }
     }
 }
