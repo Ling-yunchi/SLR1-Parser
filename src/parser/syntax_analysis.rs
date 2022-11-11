@@ -414,16 +414,14 @@ pub fn get_first(g: &Grammar) -> HashMap<String, Vec<String>> {
         first.insert(v.clone(), vec![]);
     });
 
-    // 若产生式右部第一个符号为终结符或右部含有ε，则将其加入该非终结符的 first 集合
+    // 若产生式右部第一个符号为终结符或右部只有有ε，则将其加入该非终结符的 first 集合
     g.p.iter().for_each(|p| {
         if g.t.contains(&p.right[0]) {
             first.get_mut(&p.left).unwrap().push(p.right[0].clone());
         }
-        // if p.right.contains(&"ε".to_string())
-        //     && !first.get_mut(&p.left).unwrap().contains(&"ε".to_string())
-        // {
-        //     first.get_mut(&p.left).unwrap().push("ε".to_string());
-        // }
+        if p.right == vec!["ε".to_string()] {
+            first.get_mut(&p.left).unwrap().push("ε".to_string());
+        }
     });
 
     // 对V中所有非终结符 X，检查产生式右部，添加 First(X) 中的终结符
@@ -551,11 +549,7 @@ pub fn get_follow_with_first(
                         changed = union_follow(&mut follow, &p.right[i], &p.left);
                     }
 
-                    // 否则将FITST(β)去除ε后加入FOLLOW(B)
-                    // if !follow.contains_key(&p.right[i]) {
-                    //     follow.insert(p.right[i].clone(), vec![]);
-                    // }
-
+                    // 否则将FITST(β)去除ε加入FOLLOW(B)
                     let mut b_follow = follow.get(&p.right[i]).unwrap().clone();
                     let before = b_follow.len();
 
