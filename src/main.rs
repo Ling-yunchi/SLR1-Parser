@@ -1,6 +1,6 @@
 use std::fs::File;
 
-use log::{info, LevelFilter};
+use log::{error, info, LevelFilter};
 use simplelog::{ColorChoice, CombinedLogger, Config, TermLogger, TerminalMode, WriteLogger};
 
 use crate::parser::{
@@ -78,7 +78,13 @@ fn main() {
         info!("FOLLOW(\"{}\") = {:?}", k, v);
     }
 
-    let (action, goto) = get_slr1_table(&g);
+    let (action, goto) = match get_slr1_table(&g) {
+        Ok((action, goto)) => (action, goto),
+        Err(e) => {
+            error!("get slr1 table failed: {}", e);
+            panic!("grammar is not SLR(1): {}, please check the grammar", e)
+        }
+    };
     info!("action:");
     let mut buffer = String::new();
     buffer.push_str(&format!("{:<6}", ""));

@@ -2,7 +2,7 @@ use super::{
     error::{GrammarError, SyntaxError},
     lexical_analysis::{Token, TokenType},
 };
-use log::{debug, error, info};
+use log::{debug, error, info, warn};
 use serde::{Deserialize, Serialize};
 use std::{
     collections::{HashMap, HashSet, VecDeque},
@@ -99,7 +99,9 @@ pub fn syntax_analysis(tokens: Vec<Token>) -> Result<(), SyntaxError> {
 /// 2. 求解拓广文法G'的FOLLOW集，规约时使用
 /// 3. 求解拓广文法G'的LR(0)项目集族
 /// 4. 遍历项目集族，构造ACTION表与GOTO表
-pub fn get_slr1_table(g: &Grammar) -> (Vec<HashMap<String, String>>, Vec<HashMap<String, String>>) {
+pub fn get_slr1_table(
+    g: &Grammar,
+) -> Result<(Vec<HashMap<String, String>>, Vec<HashMap<String, String>>), SyntaxError> {
     let mut outreach_g = g.clone();
     // 获取非拓广文法G的FOLLOW集，进行规约时使用
     let follow = get_follow(&outreach_g);
@@ -134,7 +136,7 @@ pub fn get_slr1_table(g: &Grammar) -> (Vec<HashMap<String, String>>, Vec<HashMap
     // Goto表初始化
     let mut GOTO = Vec::new();
     let mut temp_v = outreach_g.v.clone().into_iter().collect::<HashSet<_>>();
-    temp_v.remove((outreach_g.s.clone() + "'").as_str());
+    temp_v.remove((outreach_g.s.clone()).as_str());
     let mut row = HashMap::new();
     temp_v.iter().for_each(|v| {
         row.insert(v.clone(), "".to_string());
@@ -161,11 +163,29 @@ pub fn get_slr1_table(g: &Grammar) -> (Vec<HashMap<String, String>>, Vec<HashMap
                     if items_eq(&goto(items, ch, &outreach_g), items1) {
                         // 如果ch为终结符，则将ACTION[i, ch]置为sj
                         if outreach_g.t.contains(ch) {
-                            ACTION[i].insert(ch.clone(), format!("s{}", j));
+                            let action = format!("s{}", j);
+                            match ACTION[i].insert(ch.clone(), action.clone()) {
+                                Some(a) if a != "" && a != action => {
+                                    warn!(
+                                        "SLR action conflict: ACTION[{},\"{}\"] = {} or {}, use {}",
+                                        i, ch, a, action, action
+                                    );
+                                }
+                                _ => {}
+                            }
                         }
                         // 如果ch为非终结符，则将GOTO[i, ch]置为j
                         else {
-                            GOTO[i].insert(ch.clone(), format!("{}", j));
+                            let goto = format!("{}", j);
+                            match GOTO[i].insert(ch.clone(), goto.clone()) {
+                                Some(g) if g != "" && g != goto => {
+                                    warn!(
+                                        "SLR goto conflict: GOTO[{},\"{}\"] = {} or {}, use {}",
+                                        i, ch, g, goto, goto
+                                    );
+                                }
+                                _ => {}
+                            }
                         }
                         break;
                     }
@@ -187,7 +207,16 @@ pub fn get_slr1_table(g: &Grammar) -> (Vec<HashMap<String, String>>, Vec<HashMap
                     let follow_left = follow.get(&item.left).unwrap();
                     for f in follow_left {
                         if outreach_g.t.contains(f) {
-                            ACTION[i].insert(f.clone(), format!("r{}", j));
+                            let action = format!("r{}", j);
+                            match ACTION[i].insert(f.clone(), action.clone()) {
+                                Some(a) if a != "" && a != action => {
+                                    warn!(
+                                        "SLR action conflict: ACTION[{},\"{}\"] = {} or {}, use {}",
+                                        i, f, a, action, action
+                                    );
+                                }
+                                _ => {}
+                            }
                         }
                     }
                     if follow_left.contains(&"#".to_string()) {
@@ -198,7 +227,7 @@ pub fn get_slr1_table(g: &Grammar) -> (Vec<HashMap<String, String>>, Vec<HashMap
         }
     }
 
-    (ACTION, GOTO)
+    Ok((ACTION, GOTO))
 }
 
 /// # SLR1 分析
@@ -1020,7 +1049,10 @@ mod tests {
             info!("FOLLOW(\"{}\") = {:?}", k, v);
         }
 
-        let (action, goto) = get_slr1_table(&g);
+        let (action, goto) = match get_slr1_table(&g) {
+            Ok((action, goto)) => (action, goto),
+            Err(e) => panic!("get slr1 table failed: {}", e),
+        };
         info!("action:");
         let mut buffer = String::new();
         buffer.push_str(&format!("{:<6}", ""));
